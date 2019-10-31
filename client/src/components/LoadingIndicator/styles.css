@@ -1,0 +1,17 @@
+.loading-indicator-dot {
+  height: 1em;
+  width: 1em;
+  display: inline-block;
+  vertical-align: top;
+  border-radius: 1em;
+  animation: fadeInOut 1s ease-in-out 0ms infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 80%, 100% {
+    opacity: 0
+  }
+  40% {
+    opacity: 1
+  }
+}
