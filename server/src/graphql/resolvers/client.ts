@@ -167,12 +167,7 @@ export default {
     },
 
     editClient: async (_:any, { args }: { args: ClientInput }) => {
-      let client = await Client.findById(args.id);
-      if (!client) throw new UserInputError(`Client "${client.id}" does not exist`);
-
-      // @ts-ignore
-      client = { ...client, ...args };
-      await client.save();
+      const client = await Client.findByIdAndUpdate(args.id, args, { new: true });
       return client;
     }
   }

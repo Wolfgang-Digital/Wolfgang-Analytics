@@ -18,7 +18,8 @@ export const mongoDbConfig = {
   options: {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useFindAndModify: false
+    useFindAndModify: false,
+    useUnifiedTopology: true
   }
 };
 
