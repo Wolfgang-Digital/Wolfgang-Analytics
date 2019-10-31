@@ -42,4 +42,4 @@ export const sessionConfig = {
 
 export const corsWhitelist = DEV
   ? ['http://localhost:3000']
-  : ['https://analytics.netlify.com'];
+  : ['https://wolfgang-analytics.netlify.com'];
