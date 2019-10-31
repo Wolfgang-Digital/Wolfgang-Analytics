@@ -10,11 +10,19 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { useHistory } from 'react-router-dom';
 
 import { BASE_URL } from '../../utils/constants';
+import ClientSelect from '../ClientSelect';
 import UserAvatar from '../UserAvatar';
+import { Client } from '../../redux/client';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
-    marginLeft: 'auto'
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    '& > div:first-child': {
+      maxWidth: 300,
+      marginRight: 'auto'
+    }
   },
   button: {
     padding: `${theme.spacing(1)}px ${theme.spacing(1.5)}px`,
@@ -40,8 +48,13 @@ const HeaderMenu: React.FC = () => {
     history.push(location);
   };
 
+  const handleClientSelect = (client: any) => {
+    if (client && client.id) history.push(`/c/${client.id}`);
+  };
+
   return (
     <div className={classes.root}>
+      <ClientSelect label="Search clients" handleChange={handleClientSelect} />
       <IconButton
         aria-label="account of current user"
         aria-controls="menu-appbar"

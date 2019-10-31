@@ -6,6 +6,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import { GET_CURRENT_USER } from '../../graphql/users';
 import useQuery from '../../hooks/useQuery';
 import { Box, Typography } from '@material-ui/core';
+import AvatarIcon from './AvatarIcon';
 
 interface Props {
   size: 'sm' | 'lg';
@@ -14,13 +15,11 @@ interface Props {
 const useStyles = makeStyles({
   root: {
     display: 'flex',
-    alignItems: 'center'
-  },
-  avatar: (props: any) => ({
-    width: props.size === 'sm' ? 32 : 64,
-    height: props.size === 'sm' ? 32 : 64,
-    marginLeft: 8
-  })
+    alignItems: 'center',
+    '& > *:first-child': {
+      marginRight: 10
+    }
+  }
 });
 
 const UserAvatar: React.FC<Props> = props => {
@@ -30,7 +29,7 @@ const UserAvatar: React.FC<Props> = props => {
   return (
     <Box display="flex" className={classes.root}>
       <Typography component="span">{currentUser && currentUser.firstName}</Typography>
-      {currentUser ? <Avatar src={currentUser.profilePicture} className={classes.avatar} alt="User Avatar" /> : <AccountCircle fontSize="large"/>}
+      {currentUser ? <AvatarIcon user={currentUser} />: <AccountCircle fontSize="large"/>}
     </Box>
   );
 };

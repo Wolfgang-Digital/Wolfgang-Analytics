@@ -6,10 +6,11 @@ import { useDispatch } from 'react-redux';
 import SettingsIcon from '@material-ui/icons/Settings';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import { useLocation } from 'react-router-dom';
+import clsx from 'clsx';
 
 import { GET_CLIENT_INFO } from '../../graphql/clients';
 import useQuery from '../../hooks/useQuery';
-import { setClient } from '../../redux/client';
+import { setClient, reset } from '../../redux/client';
 import Overview from './Overview';
 import Settings from './Settings';
 
@@ -36,6 +37,13 @@ const useStyles = makeStyles((theme: Theme) =>
       '& span': {
         lineHeight: 1.1
       }
+    },
+    button: {
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0
+    },
+    activeButton: {
+      borderBottom: `2px solid ${theme.palette.secondary.main}`
     }
   })
 );
@@ -59,6 +67,10 @@ const ClientPage: React.FC = () => {
     if (!!data) {
       dispatch(setClient(data));
     }
+
+    return () => {
+      dispatch(reset());
+    }
   }, [data, dispatch]);
 
   return data ? (
@@ -73,12 +85,22 @@ const ClientPage: React.FC = () => {
           <Grid container spacing={1} justify="flex-end" className={classes.links}>
             <Grid item>
               <Link to={`/c/${id}`}>
-                <Button startIcon={<EqualizerIcon color="primary" />}>Overview</Button>
+                <Button 
+                  className={clsx(classes.button, { [classes.activeButton]: subtitle === 'Overview' })} 
+                  startIcon={<EqualizerIcon color="secondary" />}
+                >
+                  Overview
+                </Button>
               </Link>
             </Grid>
             <Grid item>
               <Link to={`/c/${id}/settings`}>
-                <Button startIcon={<SettingsIcon color="primary" />}>Settings</Button>
+                <Button 
+                  className={clsx(classes.button, { [classes.activeButton]: subtitle === 'Settings' })}
+                  startIcon={<SettingsIcon color="secondary" />}
+                >
+                  Settings
+                </Button>
               </Link>
             </Grid>
           </Grid>

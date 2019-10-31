@@ -93,18 +93,18 @@ export const sortTable = (data: any, col: number, order: string) => {
   if (isNaN(parseFloat(data[0].data[col]))) {
     return data.sort((a: any, b: any) => {
       return a.data[col] > b.data[col]
-        ? order === 'desc' ? 1 : -1
+        ? order === 'asc' ? 1 : -1
         : a.data[col] < b.data[col]
-          ? order === 'desc' ? -1 : 1
+          ? order === 'asc' ? -1 : 1
           : 0;
     });
   }
 
   return data.sort((a: any, b: any) => {
     return convertNum(a.data[col]) > convertNum(b.data[col])
-      ? order === 'desc' ? 1 : -1
+      ? order === 'asc' ? 1 : -1
       : convertNum(a.data[col]) < convertNum(b.data[col])
-        ? order === 'desc' ? -1 : 1
+        ? order === 'asc' ? -1 : 1
         : 0;
   });
 };

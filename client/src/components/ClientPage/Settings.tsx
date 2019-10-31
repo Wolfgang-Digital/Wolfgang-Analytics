@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Grid, Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -6,11 +6,13 @@ import Edit from '@material-ui/icons/Edit';
 import { cloneDeep, omit } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useApolloClient } from '@apollo/react-hooks';
+import uuid from 'uuid/v4';
 
 import { EDIT_CLIENT } from '../../graphql/clients';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import useMutation from '../../hooks/useMutation';
 import { getClient, reset } from '../../redux/client';
+import { addMessage } from '../../redux/api';
 import DesktopStepper from '../Steppers/DesktopStepper';
 import MobileStepper from '../Steppers/MobileStepper';
 import Account from '../ClientForm/Account';
@@ -77,13 +79,7 @@ const Settings: React.FC = () => {
   const client = useSelector(getClient);
   const apollo = useApolloClient();
 
-  useEffect(() => {
-    return () => {
-      dispatch(reset());
-    };
-  }, [dispatch]);
-
-  const { mutate, isLoading, data } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutation: EDIT_CLIENT,
     key: 'client'
   });
@@ -94,7 +90,11 @@ const Settings: React.FC = () => {
       update: () => {
         apollo.resetStore();
         window.localStorage.clear();
-        dispatch(reset());
+        dispatch(addMessage({
+          id: uuid(),
+          type: 'success',
+          message: 'Client updated successfully'
+        }));
       }
     });
   };
@@ -120,7 +120,7 @@ const Settings: React.FC = () => {
               Back
             </Button>
             {step === STEPS.length - 1 ? (
-              <Button disabled={isLoading || !!data} onClick={editClient} variant="contained" color="secondary" startIcon={<Edit />}>
+              <Button disabled={isLoading} onClick={editClient} variant="contained" color="secondary" startIcon={<Edit />}>
                 Update Client
               </Button>
             ) : (

@@ -56,6 +56,15 @@ export const GET_GA_PROPERTIES = gql`
   }
 `;
 
+export const GET_CLIENT_SNIPPETS = gql`
+  query GetClientSnippets {
+    clients: getClients {
+      id
+      name
+    }
+  }
+`;
+
 export const GET_CLIENT_GA_REPORTS = gql`
   query GetClientReports($filters: ClientFilters!, $args: ClientAnalyticsArgs!, $comparisonArgs: ClientAnalyticsArgs!) {
     clients: getClients(filters: $filters) {

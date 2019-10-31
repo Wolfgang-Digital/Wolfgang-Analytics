@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createSelector } from 'redux-starter-kit';
+import { omit } from 'lodash';
 
 import { ReduxState } from '.';
 
@@ -149,6 +150,13 @@ const { actions, reducer } = createSlice({
 
     setClient: (state: Client, { payload }: PayloadAction<Client>) => {
       state = Object.entries(payload).reduce((result, [key, value])=> {
+        if (key === '__typename') return result;
+
+        if (key === 'views') {
+          result.views = value.map((view: View) => omit(view, ['__typename']));
+          return result;
+        }
+
         // @ts-ignore
         state[key] = value;
         return result;

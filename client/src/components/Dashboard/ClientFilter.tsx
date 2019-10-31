@@ -10,6 +10,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     [theme.breakpoints.up('md')]: {
       '& > div': {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
         marginRight: theme.spacing(2),
         maxWidth: 200
       },

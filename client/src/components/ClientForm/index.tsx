@@ -8,10 +8,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep, omit } from 'lodash';
 import { useApolloClient } from '@apollo/react-hooks';
 import PersonAdd from '@material-ui/icons/PersonAdd';
+import uuid from 'uuid/v4';
 
 import useMediaQuery from '../../hooks/useMediaQuery';
 import useMutation from '../../hooks/useMutation';
 import { reset, getClient } from '../../redux/client';
+import { addMessage } from '../../redux/api';
 import DesktopStepper from '../Steppers/DesktopStepper';
 import MobileStepper from '../Steppers/MobileStepper';
 import Account from './Account';
@@ -91,7 +93,7 @@ const ClientForm: React.FC = () => {
   const client = useSelector(getClient);
   const apollo = useApolloClient();
 
-  const { mutate, isLoading, data } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutation: ADD_CLIENT,
     key: 'client'
   });
@@ -102,7 +104,11 @@ const ClientForm: React.FC = () => {
       update: () => {
         apollo.resetStore();
         window.localStorage.clear();
-        // dispatch(reset());
+        dispatch(addMessage({
+          id: uuid(),
+          type: 'success',
+          message: 'Client added successfully'
+        }));
       }
     });
   };
