@@ -10,10 +10,11 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import MailIcon from '@material-ui/icons/Mail';
+import People from '@material-ui/icons/People';
 import { useLocation } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import { PersonAdd } from '@material-ui/icons';
 
 import logo from '../../assets/images/brand_logo_white.png';
 import useMediaQuery from '../../hooks/useMediaQuery';
@@ -152,7 +153,7 @@ const Sidebar: React.FC = ({ children }) => {
         </AppBar>
       )}
       <Drawer
-        hidden={location.pathname === '/login'}
+        hidden={location.pathname.includes('/login')}
         variant={isSmallScreen ? 'temporary' : 'permanent'}
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
@@ -173,12 +174,16 @@ const Sidebar: React.FC = ({ children }) => {
         <Divider />
         <List>
           <ListItemLink to="/" primary="Dashboard" icon={<DashboardIcon />} />
-          <ListItemLink to="/login" primary="Login" icon={<MailIcon />} />
+          <ListItemLink to="/users/" primary="Users" icon={<People />} />
+        </List>
+        <Divider />
+        <List>
+          <ListItemLink to="/clients/add-client/" primary="Add Client" icon={<PersonAdd />} />
         </List>
         <Divider />
       </Drawer>
       <main className={classes.content}>
-        {location.pathname !== '/login' && <div className={classes.toolbar} />}
+        {location.pathname !== '/login/' && <div className={classes.toolbar} />}
         {children}
       </main>
     </div>

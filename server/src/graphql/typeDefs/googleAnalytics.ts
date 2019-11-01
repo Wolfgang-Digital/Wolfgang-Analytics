@@ -21,9 +21,25 @@ export default gql`
     viewId: ID!
     name: String!
     goalType: String!
-    value: Float!
+    value: Float
     isActive: Boolean
     url: String
+  }
+
+  type GoalData {
+    metric: String!
+    viewId: String!
+    viewName: String
+    goalId: String!
+    goalName: String
+    url: String
+    total: Float
+    values: [GoalValue!]
+  }
+
+  type GoalValue {
+    date: String!
+    value: Float
   }
 
   type Dimension {
@@ -78,5 +94,6 @@ export default gql`
     getGoals(clientId: ID!, viewId: String!): [Goal]
     getGoalsFromIds(email: String!, viewIds: [ViewInput!]!): [Goal]
     getPresetReports(args: QueryArgs!): String
+    getClientGoalCompletions(args: AnalyticsRequestArgs!): [GoalData]
   }
 `;

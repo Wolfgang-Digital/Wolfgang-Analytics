@@ -52,6 +52,7 @@ export default gql`
     team: [String!]
     gaAccount: String!
     views: [ViewArgs!]
+    goals: [GoalArgs!]
     facebookAdsId: String
     seoMonitorId: String
     pagespeedUrls: [String!]
@@ -63,6 +64,14 @@ export default gql`
     name: String!
     webPropertyId: ID!
     websiteUrl: String!
+  }
+
+  input GoalArgs {
+    id: ID!
+    viewId: String!
+    name: String!
+    url: String
+    value: Float
   }
 
   input ClientFilters {

@@ -39,9 +39,9 @@ const schema = new Schema({
   mainViewId: String,
   goals: [{
     id: String,
+    viewId: String,
     name: String,
-    value: Number,
-    isActive: Boolean
+    url: String
   }],
   kpis: [{
 

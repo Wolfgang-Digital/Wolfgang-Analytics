@@ -32,13 +32,13 @@ router.get('/user/redirect/:platform', passport.authenticate('user', { failureRe
 
 router.get('/account/redirect', passport.authenticate('account', { failureRedirect: '/', session: false }),
   (req, res) => {
-    res.redirect(process.env.NODE_ENV !== 'production' ? 'http://localhost:3000/clients/add-client' : 'https://wolfgang-analytics.netlify.com/clients/add-client');
+    res.redirect(process.env.NODE_ENV !== 'production' ? 'http://localhost:3000/clients/add-client/' : 'https://wolfgang-analytics.netlify.com/clients/add-client/');
   }
 );
 
 router.get('/logout', (req, res) => {
   req.logOut();
-  res.redirect(process.env.NODE_ENV !== 'production' ? 'http://localhost:3000/login' : 'https://wolfgang-analytics.netlify.com/login');
+  res.redirect(process.env.NODE_ENV !== 'production' ? 'http://localhost:3000/login/' : 'https://wolfgang-analytics.netlify.com/login/');
 });
 
 export default router

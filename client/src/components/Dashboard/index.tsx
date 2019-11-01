@@ -145,7 +145,7 @@ const Dashboard: React.FC = () => {
             },
             customSort: (data, col, order) => sortTable(data, col, order),
             onRowClick: data => {
-              history.push(`/c/${data[0]}`);
+              history.push(`/clients/${data[0]}/`);
             },
             customToolbar: () => (
               <FormControlLabel

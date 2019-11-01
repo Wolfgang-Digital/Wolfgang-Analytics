@@ -12,7 +12,6 @@ import { useHistory } from 'react-router-dom';
 import { BASE_URL } from '../../utils/constants';
 import ClientSelect from '../ClientSelect';
 import UserAvatar from '../UserAvatar';
-import { Client } from '../../redux/client';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -49,7 +48,7 @@ const HeaderMenu: React.FC = () => {
   };
 
   const handleClientSelect = (client: any) => {
-    if (client && client.id) history.push(`/c/${client.id}`);
+    if (client && client.id) history.push(`/clients/${client.id}/`);
   };
 
   return (
@@ -81,13 +80,13 @@ const HeaderMenu: React.FC = () => {
         open={open}
         onClose={() => setAnchorEl(null)}
       >
-        <MenuItem onClick={() => handleLinkClick('/profile')}>
+        <MenuItem onClick={() => handleLinkClick('/profile/')}>
           <ListItemIcon className={classes.icon}>
             <Profile fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Profile" />
         </MenuItem>
-        <MenuItem onClick={() => setAnchorEl(null)} component="a" href={`${BASE_URL}/auth/logout`}>
+        <MenuItem onClick={() => setAnchorEl(null)} component="a" href={`${BASE_URL}/auth/logout/`}>
           <ListItemIcon className={classes.icon}>
             <ExitIcon fontSize="small" />
           </ListItemIcon>

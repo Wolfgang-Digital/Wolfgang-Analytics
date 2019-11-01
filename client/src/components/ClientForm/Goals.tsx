@@ -3,6 +3,7 @@ import { Grid, Paper, Typography, List, ListItem, ListItemIcon, Checkbox, ListIt
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { omit } from 'lodash';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { GET_GOALS_FROM_VIEWS } from '../../graphql/clients';
 import useQuery from '../../hooks/useQuery';
@@ -88,7 +89,9 @@ const Goals: React.FC = () => {
                     onChange={() => handleToggleGoal(goal)}
                   />
                 </ListItemIcon>
-                <ListItemText id={`${goal.viewId}-${goal.id}`} primary={goal.name} secondary={goal.url} />
+                <Tooltip title={`View ID: ${goal.viewId} - Goal Number: ${goal.id}`} placement="top-start">
+                  <ListItemText id={`${goal.viewId}-${goal.id}`} primary={goal.name} secondary={goal.url} />
+                </Tooltip>
               </ListItem>
             ))}
           </List>

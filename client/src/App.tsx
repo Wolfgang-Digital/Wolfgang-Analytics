@@ -33,7 +33,7 @@ const App: React.FC = () => {
             <Route exact path="/login" component={Login} />
             <ProtectedRoute exact path="/" component={Dashboard} />
             <ProtectedRoute exact path="/clients/add-client" component={ClientForm} />
-            <ProtectedRoute path="/c/:id" component={ClientPage} />
+            <ProtectedRoute path="/clients/:id" component={ClientPage} />
           </Layout>
         </ThemeProvider>
       </Provider>

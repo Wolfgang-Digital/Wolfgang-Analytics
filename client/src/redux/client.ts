@@ -93,8 +93,7 @@ const { actions, reducer } = createSlice({
 
     addView: (state: Client, { payload }: PayloadAction<View>) => {
       // @ts-ignore
-      delete payload.__typename;
-      state.views.push(payload);
+      state.views.push(omit(payload, '__typename'));
     },
 
     removeView: (state: Client, { payload }: PayloadAction<string>) => {
@@ -135,7 +134,8 @@ const { actions, reducer } = createSlice({
       if (!!state.goals.find(goal => goal.viewId === payload.viewId && goal.id === payload.id)) {
         state.goals = state.goals.filter(goal => goal.viewId !== payload.viewId && goal.id !== payload.id);
       } else {
-        state.goals.push(payload);
+        // @ts-ignore
+        state.goals.push(omit(payload, '__typename'));
       }
     },
 

@@ -183,7 +183,27 @@ export const GET_CLIENT_INFO = gql`
       }
       goals {
         id
+        viewId
         name
+        url
+      }
+    }
+  }
+`;
+
+export const GET_GOAL_COMPLETIONS = gql`
+  query GetGoalCompletions($args:AnalyticsRequestArgs!) {
+    data: getClientGoalCompletions(args:$args) {
+      metric
+      viewId
+      viewName
+      goalId
+      goalName
+      url
+      total
+      values {
+        date
+        value
       }
     }
   }

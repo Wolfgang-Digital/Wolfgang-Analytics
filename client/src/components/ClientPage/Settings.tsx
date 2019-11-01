@@ -11,7 +11,7 @@ import uuid from 'uuid/v4';
 import { EDIT_CLIENT } from '../../graphql/clients';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import useMutation from '../../hooks/useMutation';
-import { getClient, reset } from '../../redux/client';
+import { getClient } from '../../redux/client';
 import { addMessage } from '../../redux/api';
 import DesktopStepper from '../Steppers/DesktopStepper';
 import MobileStepper from '../Steppers/MobileStepper';
@@ -86,7 +86,7 @@ const Settings: React.FC = () => {
 
   const editClient = () => {
     mutate({
-      variables: { args: cloneDeep(omit(client, ['goals', 'kpis', '__typename'])) },
+      variables: { args: cloneDeep(omit(client, ['kpis', '__typename'])) },
       update: () => {
         apollo.resetStore();
         window.localStorage.clear();

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 
 import { getClient } from '../../redux/client';
 import ServicesBar from './ServicesBar';
+import Goals from './Goals';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   subtitle: {
@@ -23,7 +24,7 @@ const Overview: React.FC = () => {
         <ServicesBar services={client.services} />
       </Grid>
       <Grid item xs={12} sm={12}>
-        
+        <Goals clientId={client.id} />
       </Grid>
     </Grid>
   );

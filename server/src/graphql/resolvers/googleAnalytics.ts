@@ -1,11 +1,10 @@
 import { UserInputError, ApolloError } from 'apollo-server-express';
-import { flatten } from 'lodash';
+import { flatten, get } from 'lodash';
 
 import Account from '../../models/Account';
 import Client from '../../models/Client';
 import { GoogleAnalyticsReport, Platform, DateType, View } from '../../types';
-import { getAnalyticsReport, AnalyticsRequestArgs, getProperties, getGoals } from '../../connections/googleAnalytics';
-import { getPresetReports, QueryArgs } from '../../connections/bigQuery';
+import { getAnalyticsReport, AnalyticsRequestArgs, getProperties, getGoals, getGoalData } from '../../connections/googleAnalytics';
 import { datePresets } from '../../utils/dates';
 
 export default {
@@ -107,6 +106,79 @@ export default {
 
       const data = await Promise.all(requests);
       return flatten(data);
+    },
+
+    getClientGoalCompletions: async (_:void, { args }: { 
+      args: Omit<AnalyticsRequestArgs, 'viewId' | 'webPropertyId' | 'accountId'> & { 
+        clientId: string
+        dateType: DateType
+      } 
+    }) => {
+      const client = await Client.findById(args.clientId);
+      if (!client) throw new UserInputError(`Client with ID "${args.clientId}" does not exist`);
+
+      const account = await Account.findOne({ email: client.gaAccount });
+      if (!account) throw new ApolloError(`Google Analytics account "${client.gaAccount}" does not exist`);
+
+      let dates = {};
+      if (args.dateType !== DateType.CUSTOM) {
+        dates = datePresets[args.dateType]();
+      }
+
+      // Get unique view IDs from goals.
+      const viewIds = client.goals.reduce((result, goal) => {
+        if (!result.includes(goal.viewId)) result.push(goal.viewId);
+        return result;
+      }, []);
+
+      const completionRequests = viewIds.map(viewId => {
+        // Can only request 10 metrics per request.
+        // TODO: Batch and return all goal completions.
+        const goalIds = client.goals.filter(goal => goal.viewId === viewId).slice(0, 10).map(goal => goal.id);
+
+        return getGoalData({
+          metric: 'Completions',
+          viewId,
+          accessToken: account.accessToken,
+          refreshToken: account.refreshToken,
+          goalIds,
+          channel: args.channel,
+          startDate: args.startDate,
+          endDate: args.endDate,
+          ...dates
+        });
+      });
+
+      const conversionRateRequests = viewIds.map(viewId => {
+        // Can only request 10 metrics per request.
+        // TODO: Batch and return all goal completions.
+        const goalIds = client.goals.filter(goal => goal.viewId === viewId).slice(0, 10).map(goal => goal.id);
+
+        return getGoalData({
+          metric: 'ConversionRate',
+          viewId,
+          accessToken: account.accessToken,
+          refreshToken: account.refreshToken,
+          goalIds,
+          channel: args.channel,
+          startDate: args.startDate,
+          endDate: args.endDate,
+          ...dates
+        });
+      });
+
+      const data = await Promise.all(completionRequests.concat(conversionRateRequests));
+
+      return flatten(data).map(entry => {
+        const goal = client.goals.find(g => g.id === entry.goalId && g.viewId === entry.viewId);
+
+        return {
+          ...entry,
+          viewName: client.views.find(v => v.id === entry.viewId).name,
+          goalName: goal.name,
+          url: goal.url
+        };
+      });
     }
   }
 };

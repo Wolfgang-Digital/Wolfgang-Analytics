@@ -1,5 +1,5 @@
 import { google, analytics_v3, analyticsreporting_v4 } from 'googleapis';
-import { get } from 'lodash';
+import { get, startCase, sumBy, meanBy } from 'lodash';
 
 import { oauthConfig } from '../config';
 import { WebProperty, View, Goal, Channel, GoogleAnalyticsReport, Platform } from '../types';
@@ -17,6 +17,13 @@ export interface AnalyticsRequestArgs {
   channel: Channel
   dimensions?: string[]
 };
+
+export interface GoalData {
+  metric: 'Conversions' | 'Conversion Rate'
+  viewId: string
+  goalId: string
+  value: number
+}
 
 const authClient = new google.auth.OAuth2(oauthConfig.clientID, oauthConfig.clientSecret);
 
@@ -189,6 +196,63 @@ export const getAnalyticsReport = async ({
     goalCompletions: row.metrics[0].values[3],
     goalConversionRate: roundWithPrecision(row.metrics[0].values[4])
   }));
+
+  return reports;
+};
+
+export const getGoalData = async({
+  metric,
+  accessToken,
+  refreshToken,
+  viewId,
+  goalIds,
+  startDate,
+  endDate,
+  channel
+}: Omit<AnalyticsRequestArgs, 'accountId' | 'webPropertyId'> & {
+  metric: 'Completions' | 'ConversionRate'
+  goalIds: string[]
+}) => {
+  const authClient = new google.auth.OAuth2(oauthConfig.clientID, oauthConfig.clientSecret);
+  authClient.setCredentials({ access_token: accessToken, refresh_token: refreshToken });
+
+  const reportRequests = [{
+    viewId,
+    dateRanges: { startDate, endDate },
+    metrics: goalIds.map(id => ({ expression: `ga:goal${id}${metric}` })),
+    filtersExpression: filters[channel].join(','),
+    dimensions: [{ name: 'ga:date' }]
+  }];
+
+  const { data } = await google.analyticsreporting('v4').reports.batchGet({
+    // @ts-ignore
+    auth: authClient,
+    requestBody: { reportRequests }
+  });
+
+  const headers = get(data, 'reports[0].columnHeader.metricHeader.metricHeaderEntries', []);
+  const rows = get(data, 'reports[0].data.rows', []);
+
+  const reports = headers.map((header: any, i: number) => {
+    return {
+      metric: startCase(metric),
+      viewId,
+      goalId: header.name.match(/[0-9]+/g)[0],
+
+      total: metric === 'Completions'
+        ? sumBy(rows, (o: any) => parseFloat(o.metrics[0].values[i]))
+        : meanBy(rows, (o: any) => parseFloat(o.metrics[0].values[i])),
+      
+      values: rows.map((row: any) => {
+        const date = row.dimensions[0].match(/([0-9]...)([0-9].)([0-9].)/);
+
+        return {
+          date: `${date[1]}-${date[2]}-${date[3]}`,
+          value: row.metrics[0].values[i]
+        };
+      })
+    };
+  });
 
   return reports;
 };

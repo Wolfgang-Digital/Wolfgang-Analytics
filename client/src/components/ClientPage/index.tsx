@@ -84,7 +84,7 @@ const ClientPage: React.FC = () => {
         <Grid item xs={12} sm={6} lg={4}>
           <Grid container spacing={1} justify="flex-end" className={classes.links}>
             <Grid item>
-              <Link to={`/c/${id}`}>
+              <Link to={`/clients/${id}/`}>
                 <Button 
                   className={clsx(classes.button, { [classes.activeButton]: subtitle === 'Overview' })} 
                   startIcon={<EqualizerIcon color="secondary" />}
@@ -94,7 +94,7 @@ const ClientPage: React.FC = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link to={`/c/${id}/settings`}>
+              <Link to={`/clients/${id}/settings/`}>
                 <Button 
                   className={clsx(classes.button, { [classes.activeButton]: subtitle === 'Settings' })}
                   startIcon={<SettingsIcon color="secondary" />}
@@ -107,8 +107,8 @@ const ClientPage: React.FC = () => {
         </Grid>
       </Grid>
       <Switch>
-        <Route exact path={`/c/${id}`} component={Overview} />
-        <Route exact path={`/c/${id}/settings`} component={Settings} />
+        <Route exact path={`/clients/${id}/`} component={Overview} />
+        <Route exact path={`/clients/${id}/settings/`} component={Settings} />
       </Switch>
     </>
   ) : null;
