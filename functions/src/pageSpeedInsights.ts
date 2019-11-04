@@ -76,19 +76,24 @@ export const updatePageSpeedInsights = async () => {
   
   await batchRequests({
     requests,
-    cb: async (id, url, res: PageSpeedReport) => {
-      data.push({
-        client_id: id,
-        date: format(new Date(), 'yyyy-MM-dd'),
-        url: urlMap[url],
-        device: res.lighthouseResult.configSettings.emulatedFormFactor,
-        first_contentful_paint: parseValue(res.lighthouseResult.audits['first-contentful-paint'].displayValue),
-        speed_index: parseValue(res.lighthouseResult.audits['speed-index'].displayValue),
-        time_to_interactive: parseValue(res.lighthouseResult.audits['interactive'].displayValue),
-        first_meaningful_paint: parseValue(res.lighthouseResult.audits['first-meaningful-paint'].displayValue),
-        first_cpu_idle: parseValue(res.lighthouseResult.audits['first-cpu-idle'].displayValue),
-        estimated_input_latency: parseValue(res.lighthouseResult.audits['estimated-input-latency'].displayValue)
-      });
+    cb: (id, url, res: PageSpeedReport) => {
+      try {
+        data.push({
+          client_id: id,
+          date: format(new Date(), 'yyyy-MM-dd'),
+          url: urlMap[url],
+          device: res.lighthouseResult.configSettings.emulatedFormFactor,
+          first_contentful_paint: parseValue(res.lighthouseResult.audits['first-contentful-paint'].displayValue),
+          speed_index: parseValue(res.lighthouseResult.audits['speed-index'].displayValue),
+          time_to_interactive: parseValue(res.lighthouseResult.audits['interactive'].displayValue),
+          first_meaningful_paint: parseValue(res.lighthouseResult.audits['first-meaningful-paint'].displayValue),
+          first_cpu_idle: parseValue(res.lighthouseResult.audits['first-cpu-idle'].displayValue),
+          estimated_input_latency: parseValue(res.lighthouseResult.audits['estimated-input-latency'].displayValue)
+        });
+      } catch (e) {
+        console.log(url);
+        console.log(JSON.stringify(res, null, 2));
+      }
     }
   });
 

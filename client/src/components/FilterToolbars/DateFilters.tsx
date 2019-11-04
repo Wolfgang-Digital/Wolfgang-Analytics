@@ -6,17 +6,17 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import { format } from 'date-fns';
 import Grid from '@material-ui/core/Grid';
-import DateRangeIcon from '@material-ui/icons/DateRange';
 import clsx from 'clsx';
 
 import { ReduxState } from '../../redux';
-import { setPlatform, setDate, setChannel, Platform, DatePreset, Channel, setCustomDate, applyCustomDate } from '../../redux/dataFilter';
+import { setDate, DatePreset, setCustomDate, applyCustomDate } from '../../redux/dataFilter';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import Dropdown from '../Dropdown';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   row: {
     [theme.breakpoints.up('md')]: {
+      display: 'flex',
       '& > div': {
         marginRight: theme.spacing(2),
         maxWidth: 200
@@ -41,6 +41,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   button: {
     height: 42,
+    borderRadius: 21,
+    marginLeft: 'auto',
     transform: 'translateY(8px)',
     [theme.breakpoints.down('sm')]: {
       marginBottom: theme.spacing(1)
@@ -48,9 +50,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-const FilterToolbar: React.FC = () => {
+const DateFilters: React.FC = () => {
   const dispatch = useDispatch();
-  const classes = useStyles();
+  const classes = useStyles({});
   const dataFilter = useSelector((state: ReduxState) => state.dataFilter);
   const isSmallScreen = useMediaQuery('sm');
 
@@ -60,38 +62,12 @@ const FilterToolbar: React.FC = () => {
     dispatch(setCustomDate({ key, value: formattedDate }));
   };
 
-  const handlePlatformChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-    dispatch(setPlatform(e.target.value as Platform));
-  };
-
-  const handleChannelChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-    dispatch(setChannel(e.target.value as Channel));
-  };
-
   const handleDateChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
     dispatch(setDate(e.target.value as DatePreset));
   };
 
   return (
-    <>
-      <Grid item xs={12} className={classes.row}>
-        <Dropdown label="Platform" value={dataFilter.platform} handleChange={handlePlatformChange}>
-          <MenuItem value="Google Analytics">Google Analytics</MenuItem>
-          <MenuItem value="Google Ads">Google Ads</MenuItem>
-          <MenuItem value="Facebook Ads">Facebook Ads</MenuItem>
-        </Dropdown>
-        <Dropdown
-          label="Channel"
-          value={dataFilter.channel}
-          handleChange={handleChannelChange}
-          isDisabled={dataFilter.platform !== 'Google Analytics'}
-        >
-          <MenuItem value="All">All</MenuItem>
-          <MenuItem value="Organic">Organic</MenuItem>
-          <MenuItem value="Paid Search">Paid Search</MenuItem>
-          <MenuItem value="Social">Social</MenuItem>
-        </Dropdown>
-      </Grid>
+    <Grid container spacing={1}>
       <Grid item xs={12} className={clsx(classes.row, classes.dates)}>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <Dropdown label="Date Preset" value={dataFilter.datePreset} handleChange={handleDateChange}>
@@ -135,16 +111,15 @@ const FilterToolbar: React.FC = () => {
             fullWidth={isSmallScreen}
             variant="outlined"
             color="primary"
-            endIcon={<DateRangeIcon />}
             disabled={dataFilter.datePreset !== 'Custom'}
             onClick={() => dispatch(applyCustomDate(true))}
           >
-            Apply Custom Date
+            Apply Date
           </Button>
         </MuiPickersUtilsProvider>
       </Grid>
-    </>
+    </Grid>
   );
 };
 
-export default FilterToolbar;
+export default DateFilters;

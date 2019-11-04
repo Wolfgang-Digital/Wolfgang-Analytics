@@ -39,11 +39,10 @@ const useStyles = makeStyles((theme: Theme) =>
       }
     },
     button: {
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0
+      color: 'rgba(0, 0, 0, 0.5)'
     },
     activeButton: {
-      borderBottom: `2px solid ${theme.palette.secondary.main}`
+      color: theme.palette.secondary.light
     }
   })
 );
@@ -87,7 +86,7 @@ const ClientPage: React.FC = () => {
               <Link to={`/clients/${id}/`}>
                 <Button 
                   className={clsx(classes.button, { [classes.activeButton]: subtitle === 'Overview' })} 
-                  startIcon={<EqualizerIcon color="secondary" />}
+                  startIcon={<EqualizerIcon color="inherit" />}
                 >
                   Overview
                 </Button>
@@ -97,7 +96,7 @@ const ClientPage: React.FC = () => {
               <Link to={`/clients/${id}/settings/`}>
                 <Button 
                   className={clsx(classes.button, { [classes.activeButton]: subtitle === 'Settings' })}
-                  startIcon={<SettingsIcon color="secondary" />}
+                  startIcon={<SettingsIcon color="inherit" />}
                 >
                   Settings
                 </Button>

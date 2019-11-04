@@ -132,7 +132,7 @@ const { actions, reducer } = createSlice({
 
     toggleGoal: (state: Client, { payload }: PayloadAction<Goal>) => {
       if (!!state.goals.find(goal => goal.viewId === payload.viewId && goal.id === payload.id)) {
-        state.goals = state.goals.filter(goal => goal.viewId !== payload.viewId && goal.id !== payload.id);
+        state.goals = state.goals.filter(goal => goal.viewId !== payload.viewId || goal.id !== payload.id);
       } else {
         // @ts-ignore
         state.goals.push(omit(payload, '__typename'));

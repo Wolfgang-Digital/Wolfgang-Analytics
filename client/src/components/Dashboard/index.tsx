@@ -16,7 +16,8 @@ import { datePresets, formatCustomDate, getDisplayDate } from '../../utils/dates
 import { reportQueries } from '../../graphql/clients';
 import useCachedQuery from '../../hooks/useCachedQuery';
 import { generateHeaders, getQueryVariables, sortTable } from './utils';
-import FilterToolbar from '../FilterToolbar';
+import DateFilters from '../FilterToolbars/DateFilters';
+import PlatformFilters from '../FilterToolbars/PlatformFilters';
 import Summary from './Summary';
 import ClientFilter from './ClientFilter';
 
@@ -114,7 +115,12 @@ const Dashboard: React.FC = () => {
           </Grid>
         </Grid>
       </Grid>
-      <FilterToolbar />
+      <Grid item xs={12}>
+        <PlatformFilters />
+      </Grid>
+      <Grid item xs={12}>
+        <DateFilters />
+      </Grid>
       <ClientFilter />
       <Grid item xs={12}>
         <Summary platform={dataFilter.platform} isLoading={isLoading} hasError={hasError} data={data} />

@@ -67,7 +67,7 @@ const formatLargeNumber = (num: number, isPercent?: boolean) => {
   return `${num.toLocaleString('en-GB')}${isPercent ? '%' : ''}`;
 };
 
-const getDelta = (a: number, b: number, toLocalString = true, nanReturn = '--') => {
+export const getDelta = (a: number, b: number, toLocalString = true, nanReturn = '--') => {
   const value = ((a - b) / b);
   return (isNaN(value) || value === Infinity) ? nanReturn : toLocalString ? value.toLocaleString('en-GB', { style: 'percent' }) : value;
 };

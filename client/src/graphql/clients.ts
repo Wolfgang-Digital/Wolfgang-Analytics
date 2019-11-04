@@ -192,8 +192,8 @@ export const GET_CLIENT_INFO = gql`
 `;
 
 export const GET_GOAL_COMPLETIONS = gql`
-  query GetGoalCompletions($args:AnalyticsRequestArgs!) {
-    data: getClientGoalCompletions(args:$args) {
+  query GetGoalCompletions($args:AnalyticsRequestArgs!, $comparisonArgs:AnalyticsRequestArgs!) {
+    current: getClientGoalCompletions(args:$args) {
       metric
       viewId
       viewName
@@ -206,6 +206,19 @@ export const GET_GOAL_COMPLETIONS = gql`
         value
       }
     }
+    previous: getClientGoalCompletions(args:$comparisonArgs) {
+      metric
+      viewId
+      viewName
+      goalId
+      goalName
+      url
+      total
+      values {
+        date
+        value
+      }
+    },
   }
 `;
 

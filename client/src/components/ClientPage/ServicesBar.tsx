@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       marginRight: theme.spacing(1)
     }
   },
+  title: {
+    fontWeight: 500
+  },
   SEO: {
     // @ts-ignore
     background: theme.palette.services.SEO
@@ -44,7 +47,7 @@ const ServicesBar: React.FC<Props> = ({ services }) => {
 
   return (
     <>
-    <Typography variant="overline">
+    <Typography variant="overline" className={classes.title}>
       Services
     </Typography>
     <div className={classes.root}>

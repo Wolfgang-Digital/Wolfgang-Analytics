@@ -1,5 +1,6 @@
 import { UserInputError, ApolloError } from 'apollo-server-express';
-import { flatten, get } from 'lodash';
+import { flatten } from 'lodash';
+import { Types } from 'mongoose';
 
 import Account from '../../models/Account';
 import Client from '../../models/Client';
@@ -117,6 +118,8 @@ export default {
       const client = await Client.findById(args.clientId);
       if (!client) throw new UserInputError(`Client with ID "${args.clientId}" does not exist`);
 
+      if (client.goals.length === 0) return [];
+
       const account = await Account.findOne({ email: client.gaAccount });
       if (!account) throw new ApolloError(`Google Analytics account "${client.gaAccount}" does not exist`);
 
@@ -169,7 +172,13 @@ export default {
 
       const data = await Promise.all(completionRequests.concat(conversionRateRequests));
 
-      return flatten(data).map(entry => {
+      const sortedData: any = [];
+      for (let i = 0; i < data[0].length; i++) {
+        sortedData.push(data[0][i]);
+        sortedData.push(data[1][i]);
+      }
+
+      return sortedData.map((entry: any) => {
         const goal = client.goals.find(g => g.id === entry.goalId && g.viewId === entry.viewId);
 
         return {
