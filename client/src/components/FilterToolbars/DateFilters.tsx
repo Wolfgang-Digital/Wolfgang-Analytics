@@ -12,6 +12,11 @@ import { ReduxState } from '../../redux';
 import { setDate, DatePreset, setCustomDate, applyCustomDate } from '../../redux/dataFilter';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import Dropdown from '../Dropdown';
+import ChannelDropdown from './ChannelDropdown';
+
+interface Props {
+  includeChannelFilter?: boolean
+}
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   row: {
@@ -43,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     height: 42,
     borderRadius: 21,
     marginLeft: 'auto',
+    lineHeight: '11px',
     transform: 'translateY(8px)',
     [theme.breakpoints.down('sm')]: {
       marginBottom: theme.spacing(1)
@@ -50,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-const DateFilters: React.FC = () => {
+const DateFilters: React.FC<Props> = ({ includeChannelFilter }) => {
   const dispatch = useDispatch();
   const classes = useStyles({});
   const dataFilter = useSelector((state: ReduxState) => state.dataFilter);
@@ -69,6 +75,7 @@ const DateFilters: React.FC = () => {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} className={clsx(classes.row, classes.dates)}>
+        {includeChannelFilter && <ChannelDropdown />}
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <Dropdown label="Date Preset" value={dataFilter.datePreset} handleChange={handleDateChange}>
             <MenuItem value="Last 30 Days">Last 30 Days</MenuItem>

@@ -44,7 +44,9 @@ const schema = new Schema({
     url: String
   }],
   kpis: [{
-
+    platform: String,
+    metric: String,
+    channel: String
   }],
   pagespeedUrls: { type: [String], default: [] }
 });

@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 
 import { GET_CURRENT_USER } from '../../graphql/users';
 import useQuery from '../../hooks/useQuery';
-import { setIsLoading, removeIsLoading } from '../../redux/api';
+import { setIsLoading, removeIsLoading, addMessage } from '../../redux/api';
 
 interface Props {
   path: string
@@ -17,8 +17,16 @@ const TIMEOUT_DURATION = 1000;
 
 const ProtectedRoute: React.FC<Props> = ({ component: Component, ...rest }) => {
   const dispatch = useDispatch();
-  const { data: currentUser } = useQuery({ query: GET_CURRENT_USER, key: 'currentUser' });
   const [hasTimedOut, setHasTimedOut] = useState(false);
+  const { data: currentUser } = useQuery({ 
+    query: GET_CURRENT_USER, 
+    key: 'currentUser',
+    options: {
+      onError: (e: any) => {
+        dispatch(addMessage({ id: uuid(), type: 'warning', message: 'You must be logged in continue' }));
+      }
+    }
+  });
 
   useEffect(() => {
     let timeout: any;

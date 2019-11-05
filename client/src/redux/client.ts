@@ -22,7 +22,9 @@ export interface Goal {
 }
 
 export interface Kpi {
-  type: string
+  platform: string
+  channel: string
+  metric: string
 }
 
 export interface User {
@@ -152,8 +154,14 @@ const { actions, reducer } = createSlice({
       state = Object.entries(payload).reduce((result, [key, value])=> {
         if (key === '__typename') return result;
 
-        if (key === 'views') {
+        else if (key === 'views') {
           result.views = value.map((view: View) => omit(view, ['__typename']));
+          return result;
+        } else if (key === 'goals') {
+          result.goals = value.map((goal: Goal) => omit(goal, ['__typename']));
+          return result;
+        } else if (key === 'kpis') {
+          result.kpis = value.map((kpi: Kpi) => omit(kpi, ['__typename']));
           return result;
         }
 
@@ -161,6 +169,14 @@ const { actions, reducer } = createSlice({
         state[key] = value;
         return result;
       }, state);
+    },
+
+    addKpi: (state: Client, { payload }: PayloadAction<Kpi>) => {
+      state.kpis.push(payload);
+    },
+
+    removeKpi: (state: Client, { payload }: PayloadAction<Kpi>) => {
+      state.kpis = state.kpis.filter(kpi => kpi.channel !== payload.channel || kpi.platform !== payload.platform || kpi.metric !== payload.metric);
     },
 
     reset: (state: Client) => {
@@ -202,6 +218,8 @@ export const {
   toggleGoal,
   setIndustry,
   setMainViewId,
-  setClient
+  setClient,
+  addKpi,
+  removeKpi
 } = actions;
 export default reducer;

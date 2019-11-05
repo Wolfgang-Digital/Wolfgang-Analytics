@@ -7,7 +7,6 @@ import clsx from 'clsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep, omit } from 'lodash';
 import { useApolloClient } from '@apollo/react-hooks';
-import PersonAdd from '@material-ui/icons/PersonAdd';
 import uuid from 'uuid/v4';
 
 import useMediaQuery from '../../hooks/useMediaQuery';
@@ -100,7 +99,7 @@ const ClientForm: React.FC = () => {
 
   const addClient = () => {
     mutate({
-      variables: { args: cloneDeep(omit(client, ['id', 'goals', 'kpis', '__typename'])) },
+      variables: { args: cloneDeep(omit(client, ['__typename'])) },
       update: () => {
         apollo.resetStore();
         window.localStorage.clear();
@@ -134,7 +133,7 @@ const ClientForm: React.FC = () => {
         Add Client
       </Typography>
       {!isSmallScreen && <DesktopStepper step={step} steps={STEPS} />}
-      <div className={clsx(classes.container, { [classes.fullWidth]: step === 1 })}>
+      <div className={clsx(classes.container, { [classes.fullWidth]: step === 1 || step === 3 })}>
         {renderStep(step)}
         {!isSmallScreen && (
           <div className={classes.buttonGroup}>
@@ -145,7 +144,7 @@ const ClientForm: React.FC = () => {
               Back
             </Button>
             {step === STEPS.length - 1 ? (
-              <Button onClick={addClient} disabled={isLoading} variant="contained" color="secondary" startIcon={<PersonAdd />}>
+              <Button onClick={addClient} disabled={isLoading} variant="contained" color="secondary">
                 Add Client
               </Button>
             ) : (

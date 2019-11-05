@@ -7,6 +7,7 @@ import { cloneDeep, omit } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useApolloClient } from '@apollo/react-hooks';
 import uuid from 'uuid/v4';
+import { useParams } from 'react-router-dom';
 
 import { EDIT_CLIENT } from '../../graphql/clients';
 import useMediaQuery from '../../hooks/useMediaQuery';
@@ -20,6 +21,7 @@ import Views from '../ClientForm/Views';
 import Services from '../ClientForm/Services';
 import Goals from '../ClientForm/Goals';
 import Complete from './Complete';
+import Kpis from '../ClientForm/Kpis';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const STEPS = ['Account', 'Views', 'Services', 'Goals', 'Complete'];
+const STEPS = ['Account', 'Views', 'Services', 'Goals', 'KPIs', 'Complete'];
 
 const renderStep = (step: number) => {
   switch (step) {
@@ -64,6 +66,9 @@ const renderStep = (step: number) => {
       return <Goals />;
 
     case 4:
+      return <Kpis />
+
+    case 5:
       return <Complete />;
 
     default:
@@ -72,9 +77,10 @@ const renderStep = (step: number) => {
 };
 
 const Settings: React.FC = () => {
+  const { start } = useParams();
   const dispatch = useDispatch();
   const isSmallScreen = useMediaQuery('sm');
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(parseInt(start || '0'));
   const classes = useStyles();
   const client = useSelector(getClient);
   const apollo = useApolloClient();
@@ -86,7 +92,7 @@ const Settings: React.FC = () => {
 
   const editClient = () => {
     mutate({
-      variables: { args: cloneDeep(omit(client, ['kpis', '__typename'])) },
+      variables: { args: cloneDeep(omit(client, ['__typename'])) },
       update: () => {
         apollo.resetStore();
         window.localStorage.clear();
@@ -115,7 +121,7 @@ const Settings: React.FC = () => {
         {!isSmallScreen && <DesktopStepper step={step} steps={STEPS} />}
         {renderStep(step)}
         {!isSmallScreen && (
-          <div className={clsx(classes.buttonGroup, { [classes.fullWidth]: step === 1 })}>
+          <div className={clsx(classes.buttonGroup, { [classes.fullWidth]: step === 1 || step === 4 })}>
             <Button disabled={step === 0} onClick={handleBack}>
               Back
             </Button>

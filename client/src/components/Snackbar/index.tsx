@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       [theme.breakpoints.up('sm')]: {
-        top: 76,
+        top: 12,
         right: 12
       }
     },

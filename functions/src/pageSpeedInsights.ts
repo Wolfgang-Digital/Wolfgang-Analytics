@@ -91,8 +91,9 @@ export const updatePageSpeedInsights = async () => {
           estimated_input_latency: parseValue(res.lighthouseResult.audits['estimated-input-latency'].displayValue)
         });
       } catch (e) {
-        console.log(url);
-        console.log(JSON.stringify(res, null, 2));
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(e.errors[0].message);
+        }
       }
     }
   });

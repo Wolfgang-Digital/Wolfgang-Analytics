@@ -99,3 +99,15 @@ export const reportMetrics = {
     { key: 'costPerOutboundClick', label: 'Cost / Outbound Click', invertColours: true }
   ]
 };
+
+export const kpiMetrics = {
+  'Google Analytics': [
+    ...reportMetrics['Google Analytics']  
+  ],
+  'Google Ads': [
+    ...reportMetrics['Google Ads']
+  ],
+  'Facebook Ads': [
+    ...reportMetrics['Facebook Ads']
+  ]
+};

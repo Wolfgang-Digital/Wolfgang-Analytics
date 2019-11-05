@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'rgba(0, 0, 0, 0.5)'
     },
     activeButton: {
-      color: theme.palette.secondary.light
+      color: theme.palette.primary.light
     }
   })
 );
@@ -93,7 +93,7 @@ const ClientPage: React.FC = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link to={`/clients/${id}/settings/`}>
+              <Link to={`/clients/${id}/settings/0`}>
                 <Button 
                   className={clsx(classes.button, { [classes.activeButton]: subtitle === 'Settings' })}
                   startIcon={<SettingsIcon color="inherit" />}
@@ -107,7 +107,7 @@ const ClientPage: React.FC = () => {
       </Grid>
       <Switch>
         <Route exact path={`/clients/${id}/`} component={Overview} />
-        <Route exact path={`/clients/${id}/settings/`} component={Settings} />
+        <Route exact path={`/clients/${id}/settings/:start`} component={Settings} />
       </Switch>
     </>
   ) : null;

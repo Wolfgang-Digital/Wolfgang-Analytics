@@ -20,18 +20,20 @@ const useQueryWrapper = ({ query, key, defaultValue, options }: Props) => {
   useEffect(() => {
     if (!loadId) setLoadId(uuid());
   }, [loadId]);
-
+  
   const { data, loading, error } = useQuery(query, {
     errorPolicy: 'all',
     ...options
   });
 
   useEffect(() => {
-    if (error) {
+    const skipError = options && options.onError;
+
+    if (error && !skipError) {
       const message = get(error, 'graphQLErrors[0].message', 'An unknown error occured');
       dispatch(addMessage({ id: uuid(), type: 'error', message }));
     }
-  }, [error, dispatch]);
+  }, [error, options, dispatch]);
 
   useEffect(() => {
     if (loading && loadId) {

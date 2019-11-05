@@ -5,8 +5,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 
 import { ReduxState } from '../../redux';
-import { setPlatform, setChannel, Platform, Channel } from '../../redux/dataFilter';
+import { setPlatform, Platform } from '../../redux/dataFilter';
 import Dropdown from '../Dropdown';
+import ChannelDropdown from './ChannelDropdown';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   row: {
@@ -31,10 +32,6 @@ const FilterToolbar: React.FC = () => {
     dispatch(setPlatform(e.target.value as Platform));
   };
 
-  const handleChannelChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-    dispatch(setChannel(e.target.value as Channel));
-  };
-
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} className={classes.row}>
@@ -43,17 +40,7 @@ const FilterToolbar: React.FC = () => {
           <MenuItem value="Google Ads">Google Ads</MenuItem>
           <MenuItem value="Facebook Ads">Facebook Ads</MenuItem>
         </Dropdown>
-        <Dropdown
-          label="Channel"
-          value={dataFilter.channel}
-          handleChange={handleChannelChange}
-          isDisabled={dataFilter.platform !== 'Google Analytics'}
-        >
-          <MenuItem value="All">All</MenuItem>
-          <MenuItem value="Organic">Organic</MenuItem>
-          <MenuItem value="Paid Search">Paid Search</MenuItem>
-          <MenuItem value="Social">Social</MenuItem>
-        </Dropdown>
+        <ChannelDropdown />
       </Grid>
     </Grid>
   );

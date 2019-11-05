@@ -23,8 +23,15 @@ export default gql`
   }
 
   type Kpi {
-    id: ID!
-    name: String
+    metric: String
+    platform: String
+    channel: String
+  }
+
+  input KpiInput {
+    metric: String!
+    platform: String!
+    channel: String!
   }
 
   input ClientAnalyticsArgs {
@@ -53,6 +60,7 @@ export default gql`
     gaAccount: String!
     views: [ViewArgs!]
     goals: [GoalArgs!]
+    kpis: [KpiInput!]
     facebookAdsId: String
     seoMonitorId: String
     pagespeedUrls: [String!]
