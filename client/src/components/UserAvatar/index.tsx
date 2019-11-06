@@ -1,7 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 
 import { GET_CURRENT_USER } from '../../graphql/users';
 import useQuery from '../../hooks/useQuery';
@@ -29,7 +27,7 @@ const UserAvatar: React.FC<Props> = props => {
   return (
     <Box display="flex" className={classes.root}>
       <Typography component="span">{currentUser && currentUser.firstName}</Typography>
-      {currentUser ? <AvatarIcon user={currentUser} />: <AccountCircle fontSize="large"/>}
+      <AvatarIcon user={currentUser} />
     </Box>
   );
 };

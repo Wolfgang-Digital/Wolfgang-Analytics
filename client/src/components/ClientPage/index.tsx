@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'rgba(0, 0, 0, 0.5)'
     },
     activeButton: {
-      color: theme.palette.primary.light
+      color: theme.palette.primary.main
     }
   })
 );

@@ -1,10 +1,13 @@
 import { DataFilter } from '../redux/dataFilter';
+import { get } from 'lodash';
 
-export const generateKey = ({ platform, channel, datePreset, industry, tier }: DataFilter) => {
+export const generateKey = ({ platform, channel, datePreset, industry, tier, filterUser }: DataFilter) => {
+  const user = get(filterUser, '[0].id', 'NONE');
+
   if (platform === 'Google Analytics') {
-    return `${platform}:${channel}:${datePreset}:${industry}:${tier}`;
+    return `${platform}:${channel}:${datePreset}:${industry}:${tier}:${user}`;
   } else {
-    return `${platform}:${datePreset}:${industry}:${tier}`;
+    return `${platform}:${datePreset}:${industry}:${tier}:${user}`;
   }
 };
 

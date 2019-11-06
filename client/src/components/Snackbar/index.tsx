@@ -78,7 +78,7 @@ const Snackbar: React.FC = () => {
         horizontal: 'right'
       }}
       open={messages.length > 0}
-      autoHideDuration={5000}
+      autoHideDuration={3000}
       onClose={handleClose}
       TransitionComponent={props => <Slide {...props} direction="left" />}
     >

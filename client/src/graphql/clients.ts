@@ -187,6 +187,11 @@ export const GET_CLIENT_INFO = gql`
         name
         url
       }
+      kpis {
+        metric
+        platform
+        channel
+      }
     }
   }
 `;
@@ -219,6 +224,50 @@ export const GET_GOAL_COMPLETIONS = gql`
         value
       }
     },
+  }
+`;
+
+export const GET_CLIENT_KPIS = gql`
+  query GetClientKpis($clientId: ID!, $dates: DateArgs!, $compareDates: DateArgs!) {
+    data: getClientKpis(clientId: $clientId, args: $dates) {
+      platform
+      metric
+      data {
+        date
+        value
+      }
+    }
+    comparisonData: getClientKpis(clientId: $clientId, args: $compareDates) {
+      platform
+      metric
+      data {
+        date
+        value
+      }
+    }
+  }
+`;
+
+export const GET_METRIC = gql`
+  query GetClientMetric($clientId: ID!, $metric:MetricRequestArgs!, $dates: DateArgs!, $compareDates: DateArgs!) {
+    current: getClientMetric(clientId: $clientId, metric: $metric, date: $dates) {
+      metric
+      channel
+      platform
+      data {
+        date
+        value
+      }
+    }
+    previous: getClientMetric(clientId: $clientId, metric: $metric, date: $compareDates) {
+      metric
+      channel
+      platform
+      data {
+        date
+        value
+      }
+    }
   }
 `;
 

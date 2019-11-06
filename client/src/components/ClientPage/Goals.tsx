@@ -35,13 +35,15 @@ const useStyles = makeStyles({
   },
   titleText: {
     display: 'flex',
+    lineHeight: '28px',
+    fontSize: 28,
     '& > img': {
-      marginRight: 12,
-      height: 32
+      marginRight: 8,
+      height: 26
     },
     '& > div:last-child': {
       marginLeft: 10,
-      transform: 'translateY(3px)'
+      transform: 'translateY(-2px)'
     }
   }
 });

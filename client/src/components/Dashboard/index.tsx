@@ -52,6 +52,9 @@ const useStyles = makeStyles((theme: Theme) =>
     addClientButton: {
       marginLeft: 'auto',
       textDecoration: 'none',
+      '& > button': {
+        borderRadius: 22
+      },
       [theme.breakpoints.down(375)]: {
         margin: `${theme.spacing(1)}px 0`
       }

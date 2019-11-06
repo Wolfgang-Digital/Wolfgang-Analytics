@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Grid, Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import Edit from '@material-ui/icons/Edit';
 import { cloneDeep, omit } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useApolloClient } from '@apollo/react-hooks';
@@ -91,8 +90,14 @@ const Settings: React.FC = () => {
   });
 
   const editClient = () => {
+    const args = cloneDeep(omit(client, ['__typename']));
+    // @ts-ignore
+    args.leads = args.leads.map(user => user.id);
+    // @ts-ignore
+    args.team = args.team.map(user => user.id);
+
     mutate({
-      variables: { args: cloneDeep(omit(client, ['__typename'])) },
+      variables: { args },
       update: () => {
         apollo.resetStore();
         window.localStorage.clear();
@@ -126,7 +131,7 @@ const Settings: React.FC = () => {
               Back
             </Button>
             {step === STEPS.length - 1 ? (
-              <Button disabled={isLoading} onClick={editClient} variant="contained" color="secondary" startIcon={<Edit />}>
+              <Button disabled={isLoading} onClick={editClient} variant="contained" color="secondary">
                 Update Client
               </Button>
             ) : (

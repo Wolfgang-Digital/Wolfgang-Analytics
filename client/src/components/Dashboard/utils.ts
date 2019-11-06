@@ -32,7 +32,7 @@ const serviceMap = {
   'Social': 'PAID_SOCIAL'
 };
 
-export const getQueryVariables = ({ platform, channel, datePreset, startDate, endDate, industry, tier }: DataFilter) => {
+export const getQueryVariables = ({ platform, channel, datePreset, startDate, endDate, industry, tier, filterUser }: DataFilter) => {
   const services = [];
   if (platform === 'Google Analytics' && channel !== 'All') {
     services.push(serviceMap[channel]);
@@ -47,7 +47,8 @@ export const getQueryVariables = ({ platform, channel, datePreset, startDate, en
       services,
       platform,
       industry,
-      tier
+      tier,
+      users: []
     },
     args: { dateType: toUpperCase(datePreset), startDate, endDate },
     comparisonArgs: {
@@ -76,6 +77,11 @@ export const getQueryVariables = ({ platform, channel, datePreset, startDate, en
     variables.comparisonArgs.startDate = dates.startDate;
     variables.comparisonArgs.endDate = dates.endDate;
   }
+
+  if (filterUser.length > 0) {
+    variables.filters.users = [filterUser[0].id];
+  }
+
   return variables;
 };
 

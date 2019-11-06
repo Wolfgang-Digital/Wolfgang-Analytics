@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction, createSelector } from 'redux-starter-kit';
 import { format } from 'date-fns';
+
 import { ReduxState } from '.';
+import { User } from './client';
 
 export type Platform = 'Google Analytics' | 'Google Ads' | 'Facebook Ads';
 export type Channel = 'All' | 'Organic' | 'Paid Search' | 'Social';
@@ -17,6 +19,7 @@ export interface DataFilter {
   industry: string
   tier: number
   applyCustomDate: boolean
+  filterUser: User[]
 }
 
 const initialState: DataFilter = {
@@ -28,7 +31,8 @@ const initialState: DataFilter = {
   endDate: format(new Date(), 'yyyy-MM-dd'),
   industry: 'None',
   applyCustomDate: false,
-  tier: 0
+  tier: 0,
+  filterUser: []
 };
 
 const { actions, reducer } = createSlice({
@@ -69,6 +73,14 @@ const { actions, reducer } = createSlice({
     
     setTier: (state: DataFilter, { payload }: PayloadAction<number>) => {
       state.tier = payload;
+    },
+
+    setFilterUser: (state: DataFilter, { payload }: PayloadAction<{ user?: User }>) => {
+      if (!payload.user) {
+        state.filterUser = [];
+      } else {
+        state.filterUser = [payload.user];
+      }
     }
   }
 });
@@ -86,6 +98,7 @@ export const {
   setCustomDate, 
   setIndustry, 
   applyCustomDate,
-  setTier
+  setTier,
+  setFilterUser
 } = actions;
 export default reducer;

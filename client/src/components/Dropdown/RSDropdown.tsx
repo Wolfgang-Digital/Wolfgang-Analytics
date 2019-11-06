@@ -64,6 +64,10 @@ const styles = {
   loadingIndicator: (base: any) => ({
     ...base,
     color: '#9b549d'
+  }),
+  menu: (base: any) => ({
+    ...base,
+    zIndex: 1000
   })
 };
 

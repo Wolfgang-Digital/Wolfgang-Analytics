@@ -6,7 +6,6 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import { format } from 'date-fns';
 import Grid from '@material-ui/core/Grid';
-import clsx from 'clsx';
 
 import { ReduxState } from '../../redux';
 import { setDate, DatePreset, setCustomDate, applyCustomDate } from '../../redux/dataFilter';
@@ -31,23 +30,21 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       }
     }
   },
-  dates: {
+  startDate: {
     [theme.breakpoints.down('sm')]: {
-      '& > div:not(:first-child)': {
-        width: '50%'
-      },
-      '& > div:nth-child(2)': {
-        paddingRight: 4
-      },
-      '& > div:nth-child(3)': {
-        paddingLeft: 4
-      }
+      width: '50%',
+      paddingRight: 4
+    }
+  },
+  endDate: {
+    [theme.breakpoints.down('sm')]: {
+      width: '50%',
+      paddingLeft: 4
     }
   },
   button: {
     height: 42,
     borderRadius: 21,
-    marginLeft: 'auto',
     lineHeight: '11px',
     transform: 'translateY(8px)',
     [theme.breakpoints.down('sm')]: {
@@ -74,16 +71,17 @@ const DateFilters: React.FC<Props> = ({ includeChannelFilter }) => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12} className={clsx(classes.row, classes.dates)}>
+      <Grid item xs={12} className={classes.row}>
         {includeChannelFilter && <ChannelDropdown />}
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Dropdown label="Date Preset" value={dataFilter.datePreset} handleChange={handleDateChange}>
+          <Dropdown label="Date Preset" value={dataFilter.datePreset} handleChange={handleDateChange} fullWidth>
             <MenuItem value="Last 30 Days">Last 30 Days</MenuItem>
             <MenuItem value="Last Month">Last Month</MenuItem>
             <MenuItem value="Year to Date">Year to Date</MenuItem>
             <MenuItem value="Custom">Custom</MenuItem>
           </Dropdown>
           <KeyboardDatePicker
+            className={classes.startDate}
             disableToolbar
             variant="inline"
             format="dd/MM/yyyy"
@@ -99,6 +97,7 @@ const DateFilters: React.FC<Props> = ({ includeChannelFilter }) => {
             }}
           />
           <KeyboardDatePicker
+            className={classes.endDate}
             disableToolbar
             variant="inline"
             inputVariant="outlined"

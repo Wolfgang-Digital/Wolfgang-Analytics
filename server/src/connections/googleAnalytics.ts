@@ -1,5 +1,6 @@
 import { google, analytics_v3, analyticsreporting_v4 } from 'googleapis';
 import { get, startCase, sumBy, meanBy } from 'lodash';
+import { OAuth2Client } from 'googleapis-common';
 
 import { oauthConfig } from '../config';
 import { WebProperty, View, Goal, Channel, GoogleAnalyticsReport, Platform } from '../types';
@@ -255,4 +256,54 @@ export const getGoalData = async({
   });
 
   return reports;
+};
+
+interface SingleMetricArgs {
+  authClient: OAuth2Client
+  viewId: string
+  dateRange: {
+    startDate: string
+    endDate: string
+  }
+  metrics: {
+    expression: string
+  }[]
+  filtersExpression: string
+  dimensions: {
+    name: string
+  }[]
+}
+
+export const getMetric = async ({
+  authClient,
+  viewId,
+  dateRange,
+  metrics,
+  filtersExpression,
+  dimensions
+}: SingleMetricArgs) => {
+  const reportRequests = [{
+    viewId,
+    dateRanges: dateRange,
+    metrics,
+    filtersExpression,
+    dimensions
+  }];
+
+  const { data } = await google.analyticsreporting('v4').reports.batchGet({
+    // @ts-ignore
+    auth: authClient,
+    requestBody: { reportRequests }
+  });
+
+  const rows = get(data, 'reports[0].data.rows', []);
+
+  return rows.map((row: analyticsreporting_v4.Schema$ReportRow) => {
+    const date = row.dimensions[0].match(/([0-9]...)([0-9].)([0-9].)/);
+
+    return {
+      date: `${date[1]}-${date[2]}-${date[3]}`,
+      value: row.metrics[0].values[0]
+    };
+  });
 };

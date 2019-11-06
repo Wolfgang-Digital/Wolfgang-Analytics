@@ -50,6 +50,9 @@ export const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   menuButton: {
     marginRight: 36,
+    [theme.breakpoints.down('sm')]: {
+      marginRight: 0
+    }
   },
   hide: {
     display: 'none',

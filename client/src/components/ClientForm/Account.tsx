@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import { MenuItem, Button, Paper } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { INDUSTRIES } from '../../utils/constants';
+import { INDUSTRIES, BASE_URL } from '../../utils/constants';
 import { GET_GA_ACCOUNTS } from '../../graphql/clients';
 import { getClient, setGaAccount, editUsers, User, editName, setTier, setIndustry } from '../../redux/client';
 import useQuery from '../../hooks/useQuery';
@@ -136,7 +136,7 @@ const Account: React.FC<Props> = ({ disableAccountChange }) => {
         <Grid item xs={12} sm={4}>
           <Button
             component="a"
-            href="http://localhost:8000/auth/account/register"
+            href={`${BASE_URL}/auth/account/register`}
             variant="contained"
             className={classes.button}
             fullWidth
@@ -147,10 +147,10 @@ const Account: React.FC<Props> = ({ disableAccountChange }) => {
           </Button>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <UserSelect label="Client Leads" selectedUsers={client.leads} handleChange={e => handleUserChange(e, 'leads')} />
+          <UserSelect isMulti label="Client Leads" selectedUsers={client.leads} handleChange={e => handleUserChange(e, 'leads')} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <UserSelect label="Wolfgangers" selectedUsers={client.team} handleChange={e => handleUserChange(e, 'team')} />
+          <UserSelect isMulti label="Wolfgangers" selectedUsers={client.team} handleChange={e => handleUserChange(e, 'team')} />
         </Grid>
       </Grid>
     </Paper>

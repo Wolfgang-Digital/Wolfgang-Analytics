@@ -88,6 +88,7 @@ export default gql`
     industry: String
     tier: Int
     page: Int
+    users: [String!]
   }
 
   extend type Query {

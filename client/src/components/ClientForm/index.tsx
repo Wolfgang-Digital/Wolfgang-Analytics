@@ -12,6 +12,7 @@ import uuid from 'uuid/v4';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import useMutation from '../../hooks/useMutation';
 import { reset, getClient } from '../../redux/client';
+import { ADD_CLIENT } from '../../graphql/clients';
 import { addMessage } from '../../redux/api';
 import DesktopStepper from '../Steppers/DesktopStepper';
 import MobileStepper from '../Steppers/MobileStepper';
@@ -20,9 +21,9 @@ import Views from './Views';
 import Services from './Services';
 import Goals from './Goals';
 import Complete from './Complete';
-import { ADD_CLIENT } from '../../graphql/clients';
+import Kpis from './Kpis';
 
-const STEPS = ['Account', 'Views', 'Services', 'Goals', 'Complete'];
+const STEPS = ['Account', 'Views', 'Services', 'Goals', 'KPIs', 'Complete'];
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,6 +78,9 @@ const renderStep = (step: number) => {
       return <Goals />;
 
     case 4:
+      return <Kpis />;
+
+    case 5:
       return <Complete />;
 
     default:
@@ -98,8 +102,14 @@ const ClientForm: React.FC = () => {
   });
 
   const addClient = () => {
+    const args = cloneDeep(omit(client, ['__typename']));
+    // @ts-ignore
+    args.leads = args.leads.map(user => user.id);
+    // @ts-ignore
+    args.team = args.team.map(user => user.id);
+
     mutate({
-      variables: { args: cloneDeep(omit(client, ['__typename'])) },
+      variables: { args },
       update: () => {
         apollo.resetStore();
         window.localStorage.clear();
@@ -133,7 +143,7 @@ const ClientForm: React.FC = () => {
         Add Client
       </Typography>
       {!isSmallScreen && <DesktopStepper step={step} steps={STEPS} />}
-      <div className={clsx(classes.container, { [classes.fullWidth]: step === 1 || step === 3 })}>
+      <div className={clsx(classes.container, { [classes.fullWidth]: step === 1 || step === 4 })}>
         {renderStep(step)}
         {!isSmallScreen && (
           <div className={classes.buttonGroup}>

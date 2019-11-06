@@ -40,7 +40,8 @@ const theme = createMuiTheme({
     },
     MuiInputBase: {
       root: {
-        height: 42
+        height: 42,
+        background: 'rgba(255, 255, 255, 0.66)'
       }
     },
     MuiOutlinedInput: {

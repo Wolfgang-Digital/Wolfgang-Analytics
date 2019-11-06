@@ -1,12 +1,37 @@
 import { UserInputError, ApolloError } from 'apollo-server-express';
 import { flatten } from 'lodash';
-import { Types } from 'mongoose';
+import { google } from 'googleapis';
 
 import Account from '../../models/Account';
 import Client from '../../models/Client';
-import { GoogleAnalyticsReport, Platform, DateType, View } from '../../types';
+import { GoogleAnalyticsReport, Platform, DateType, View, Kpi } from '../../types';
 import { getAnalyticsReport, AnalyticsRequestArgs, getProperties, getGoals, getGoalData } from '../../connections/googleAnalytics';
 import { datePresets } from '../../utils/dates';
+import { oauthConfig } from '../../config';
+import { getMetric } from '../../connections/googleAnalytics';
+import { filters } from '../../utils/constants';
+ 
+interface DateArgs {
+  dateType: DateType
+  startDate?: string
+  endDate?: string
+}
+
+const getChannel = (str: string) => {
+  switch (str) {
+    case 'Organic':
+      return 'ORGANIC';
+
+    case 'Paid Search':
+      return 'PAID_SEARCH';
+
+    case 'Paid Social':
+      return 'SOCIAL';
+
+    default:
+      return 'ALL';
+  }
+};
 
 export default {
   Query: {
@@ -188,6 +213,114 @@ export default {
           url: goal.url
         };
       });
+    },
+
+    getClientKpis: async (_:void, { clientId, args }: { clientId: string, args: DateArgs }) => {
+      const client = await Client.findById(clientId);
+      if (!client) throw new UserInputError(`Client with ID "${clientId}" does not exist`);
+
+      if (client.kpis.length === 0) return [];
+
+      const account = await Account.findOne({ email: client.gaAccount });
+      if (!account) throw new ApolloError(`Google Analytics account "${client.gaAccount}" does not exist`);
+
+      const authClient = new google.auth.OAuth2(oauthConfig.clientID, oauthConfig.clientSecret);
+      authClient.setCredentials({ access_token: account.accessToken, refresh_token: account.refreshToken });
+
+      let dates = { startDate: args.startDate, endDate: args.endDate };
+      if (args.dateType !== DateType.CUSTOM) {
+        dates = datePresets[args.dateType]();
+      }
+
+      const requests = client.kpis.map(kpi => {
+        switch (kpi.platform) {
+          case 'Google Analytics':
+            return getMetric({
+              authClient,
+              viewId: client.mainViewId || client.views[0].id,
+              dateRange: dates,
+              metrics: [{ expression: `ga:${kpi.metric}` }],
+              filtersExpression: filters[getChannel(kpi.channel)].join(','),
+              dimensions: [{ name: 'ga:date' }]
+            });
+
+          case 'Google Ads':
+            return getMetric({
+              authClient,
+              viewId: client.mainViewId || client.views[0].id,
+              dateRange: dates,
+              metrics: [{ expression: `ga:${kpi.metric}` }],
+              filtersExpression: filters.PAID_SEARCH.join(','),
+              dimensions: [{ name: 'ga:date' }]
+            });
+
+          default:
+            break;
+        }
+      });
+
+      const data = await Promise.all(requests);
+
+      return data.map((result, i) => {
+        return {
+          metric: client.kpis[i].metric,
+          platform: client.kpis[i].platform,
+          channel: client.kpis[i].channel,
+          data: result
+        };
+      });
+    },
+
+    getClientMetric: async (_:void, { clientId, date, metric }: {
+      clientId: string
+      date: DateArgs
+      metric: Kpi
+    }) => {
+      const client = await Client.findById(clientId);
+      if (!client) throw new UserInputError(`Client with ID "${clientId}" does not exist`);
+
+      const account = await Account.findOne({ email: client.gaAccount });
+      if (!account) throw new ApolloError(`Google Analytics account "${client.gaAccount}" does not exist`);
+
+      const authClient = new google.auth.OAuth2(oauthConfig.clientID, oauthConfig.clientSecret);
+      authClient.setCredentials({ access_token: account.accessToken, refresh_token: account.refreshToken });
+      
+      let dates = { startDate: date.startDate, endDate: date.endDate };
+      if (date.dateType !== DateType.CUSTOM) {
+        dates = datePresets[date.dateType]();
+      }
+
+      let result;
+
+      switch (metric.platform) {
+        case 'Google Analytics':
+          result = await getMetric({
+            authClient,
+            viewId: client.mainViewId || client.views[0].id,
+            dateRange: dates,
+            metrics: [{ expression: `ga:${metric.metric}` }],
+            filtersExpression: filters[getChannel(metric.channel)].join(','),
+            dimensions: [{ name: 'ga:date' }]
+          });
+
+        case 'Google Ads':
+          result = await getMetric({
+            authClient,
+            viewId: client.mainViewId || client.views[0].id,
+            dateRange: dates,
+            metrics: [{ expression: `ga:${metric.metric}` }],
+            filtersExpression: filters.PAID_SEARCH.join(','),
+            dimensions: [{ name: 'ga:date' }]
+          });
+
+        default:
+          break;
+      }
+
+      return {
+        ...metric,
+        data: result
+      };
     }
   }
 };

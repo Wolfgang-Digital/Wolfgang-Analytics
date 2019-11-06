@@ -9,7 +9,8 @@ interface Props {
   label: string;
   selectedUsers: User[];
   isDisabled?: boolean
-  handleChange: (e: { action: string, value?: User }) => void;
+  isMulti?: boolean
+  handleChange: (e: any) => void;
 }
 
 const UserSelect: React.FC<Props> = ({ label, selectedUsers, handleChange, ...rest }) => {
@@ -25,7 +26,6 @@ const UserSelect: React.FC<Props> = ({ label, selectedUsers, handleChange, ...re
       options={users.map(user => ({ label: user.firstName, value: user }))}
       value={selectedUsers.map(user => ({ label: user.firstName, value: user }))}
       handleChange={handleChange}
-      isMulti
       isSearchable
       isClearable
       isLoading={isLoading}

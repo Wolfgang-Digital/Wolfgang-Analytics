@@ -26,7 +26,9 @@ export interface Goal {
 }
 
 export interface Kpi {
-  type: string
+  platform: string
+  metric: string
+  channel: string
 }
 
 export enum Channel {

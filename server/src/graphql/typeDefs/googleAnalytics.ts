@@ -83,9 +83,22 @@ export default gql`
     webPropertyId: ID!
   }
 
-  input QueryArgs {
-    dataset: String!
-    table: String!
+  type KpiReport {
+    platform: String
+    metric: String
+    channel: String
+    data: [BreakdownData!]
+  }
+
+  type BreakdownData {
+    date: String!
+    value: Float
+  }
+
+  input MetricRequestArgs {
+    metric: String
+    platform: String
+    channel: String
   }
 
   extend type Query {
@@ -93,7 +106,8 @@ export default gql`
     getProperties(email: String!): [WebProperty]
     getGoals(clientId: ID!, viewId: String!): [Goal]
     getGoalsFromIds(email: String!, viewIds: [ViewInput!]!): [Goal]
-    getPresetReports(args: QueryArgs!): String
     getClientGoalCompletions(args: AnalyticsRequestArgs!): [GoalData]
+    getClientKpis(clientId: ID!, args: DateArgs!): [KpiReport]
+    getClientMetric(clientId: ID!, date: DateArgs!, metric: MetricRequestArgs!): KpiReport
   }
 `;

@@ -7,6 +7,7 @@ import { DateType, View, Services } from '../../types';
 import { datePresets } from '../../utils/dates';
 import { AdwordsRequestArgs, getAdwordsReport } from '../../connections/googleAds';
 import { FacebookRequestArgs, getFacebookAdsReport } from '../../connections/facebookAds';
+import User from '../../models/User';
 
 interface GAMetrics {
   sessions: number
@@ -39,6 +40,7 @@ interface Filters {
   platform: string
   industry: string
   tier: number
+  users: string[]
 }
 
 export default {
@@ -59,17 +61,20 @@ export default {
       if (filters && filters.tier && filters.tier !== 0) {
         requirements.tier = filters.tier;
       }
+      if (filters && filters.users && filters.users.length > 0) {
+        requirements.$or = [{ leads: filters.users[0] }, { team: filters.users[0] }];
+      }
 
       return await Client.find(requirements)
-        .populate('leads')
-        .populate('team')
+        .populate({ path: 'leads', model: 'User' })
+        .populate({ path: 'team', model: 'User' })
         .sort({ name: 1 });
     },
 
     getClientById: async (_: any, { id }: { id: string }) => {
       return await Client.findById(id)
-        .populate('leads')
-        .populate('team');
+        .populate({ path: 'leads', model: 'User' })
+        .populate({ path: 'team', model: 'User' })
     },
 
     getAccounts: async () => {

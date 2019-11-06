@@ -6,10 +6,12 @@ import { useSelector } from 'react-redux';
 import { getClient } from '../../redux/client';
 import DateFilters from '../FilterToolbars/DateFilters';
 import ServicesBar from './ServicesBar';
+import UsersBar from './UsersBar';
 import Goals from './Goals';
+import Kpis from './Kpis';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-  services: {
+  row: {
     marginBottom: theme.spacing(2)
   },
 }));
@@ -20,14 +22,20 @@ const Overview: React.FC = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} sm={12} className={classes.services}>
+      <Grid item xs={12} sm={6} className={classes.row}>
         <ServicesBar services={client.services} />
+      </Grid>
+      <Grid item xs={12} sm={6} className={classes.row}>
+        <UsersBar leads={client.leads} team={client.team} />
       </Grid>
       <Grid item xs={12}>
         <DateFilters includeChannelFilter />
       </Grid>
-      <Grid item xs={12} sm={12}>
+      <Grid item xs={12}>
         <Goals />
+      </Grid>
+      <Grid item xs={12}>
+        <Kpis />
       </Grid>
     </Grid>
   );
