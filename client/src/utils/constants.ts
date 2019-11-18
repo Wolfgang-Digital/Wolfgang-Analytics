@@ -75,31 +75,32 @@ export const tableHeaders = {
 
 export const reportMetrics = {
   'Google Analytics': [
-    { key: 'sessions', label: 'Sessions', invertColours: false },
-    { key: 'transactions', label: 'Transactions', invertColours: false },
-    { key: 'goalCompletions', label: 'Goal Completions', invertColours: false },
-    { key: 'goalConversionRate', label: 'Goal Conversion Rate', invertColours: false }
+    { key: 'sessions', label: 'Sessions', invertColours: false, prefix: '', suffix: '', aggregate: 'sum' },
+    { key: 'transactions', label: 'Transactions', invertColours: false, prefix: '', suffix: '', aggregate: 'sum' },
+    { key: 'goalCompletions', label: 'Goal Completions', invertColours: false, prefix: '', suffix: '', aggregate: 'sum' },
+    { key: 'goalConversionRate', label: 'Goal Conversion Rate', invertColours: false, prefix: '', suffix: '%', aggregate: 'mean' }
   ],
   'Google Ads': [
-    { key: 'clicks', label: 'Clicks', invertColours: false },
-    { key: 'impressions', label: 'Impressions', invertColours: false },
-    { key: 'ctr', label: 'CTR', invertColours: false },
-    { key: 'cpc', label: 'CPC', invertColours: true },
-    { key: 'cost', label: 'Cost', invertColours: true },
-    { key: 'totalConversionValue', label: 'Conversion Value', invertColours: false },
-    { key: 'costPerConversion', label: 'Cost / Conversion', invertColours: true },
-    { key: 'roas', label: 'ROAS', invertColours: false }
+    { key: 'clicks', label: 'Clicks', invertColours: false, prefix: '', suffix: '', aggregate: 'sum' },
+    { key: 'impressions', label: 'Impressions', invertColours: false, prefix: '', suffix: '', aggregate: 'sum' },
+    { key: 'ctr', label: 'CTR', invertColours: false, prefix: '', suffix: '%', aggregate: 'mean' },
+    { key: 'cpc', label: 'CPC', invertColours: true, prefix: '€', suffix: '', aggregate: 'mean' },
+    { key: 'cost', label: 'Cost', invertColours: true, prefix: '€', suffix: '', aggregate: 'sum' },
+    { key: 'totalConversionValue', label: 'Conversion Value', invertColours: false, prefix: '€', suffix: '', aggregate: 'sum' },
+    { key: 'costPerConversion', label: 'Cost / Conversion', invertColours: true, prefix: '€', suffix: '', aggregate: 'mean' },
+    { key: 'roas', label: 'ROAS', invertColours: false, prefix: '', suffix: '%', aggregate: 'mean' }
   ],
   'Facebook Ads': [
-    { key: 'impressions', label: 'Impressions', invertColours: false },
-    { key: 'reach', label: 'Reach', invertColours: false },
-    { key: 'cpc', label: 'CPC', invertColours: true },
-    { key: 'ctr', label: 'CTR', invertColours: false },
-    { key: 'outboundClicks', label: 'Outbound Clicks', invertColours: false },
-    { key: 'costPerOutboundClick', label: 'Cost / Outbound Click', invertColours: true }
+    { key: 'impressions', label: 'Impressions', invertColours: false, prefix: '', suffix: '', aggregate: 'sum' },
+    { key: 'reach', label: 'Reach', invertColours: false, prefix: '', suffix: '', aggregate: 'sum' },
+    { key: 'cpc', label: 'CPC', invertColours: true, prefix: '€', suffix: '', aggregate: 'mean' },
+    { key: 'ctr', label: 'CTR', invertColours: false, prefix: '', suffix: '%', aggregate: 'mean' },
+    { key: 'outboundClicks', label: 'Outbound Clicks', invertColours: false, prefix: '', suffix: '', aggregate: 'sum' },
+    { key: 'costPerOutboundClick', label: 'Cost / Outbound Click', invertColours: true, prefix: '€', suffix: '', aggregate: 'mean' }
   ]
 };
 
+// Can't remember why I did this. Remove?
 export const kpiMetrics = {
   'Google Analytics': [
     ...reportMetrics['Google Analytics']  

@@ -74,7 +74,7 @@ const GoalCard: React.FC<Props> = ({ current, previous }) => {
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <CardContent className={classes.titleContent}>
-              <ListItemText primary={current.goalName} secondary={`${current.viewName} #${current.goalId}`} />
+              <ListItemText primary={current.goalName} secondary={<span><strong>#{current.goalId}</strong> {current.viewName}</span>} />
             </CardContent>
           </Grid>
           <Grid item xs={12}>

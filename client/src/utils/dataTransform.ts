@@ -54,7 +54,16 @@ const dummyAdwordsData = {
   roas: '--'
 };
 
-const formatLargeNumber = (num: number, isPercent?: boolean) => {
+const dummyFbData = {
+  impressions: '--',
+  reach: '--',
+  cpc: '--',
+  ctr: '--',
+  outboundClicks: '--',
+  costPerOutboundClick: '--'
+};
+
+export const formatLargeNumber = (num: number, isPercent?: boolean) => {
   if (!num && num !== 0) return '--';
   
   if (num > 1000000) {
@@ -142,23 +151,26 @@ export const formatFacebookReports = (data: ClientData<FacebookData>[], showFull
   if (!data) return [];
 
   return data.map(({ id, name, industry, tier, data, dataComparison }) => {
+    const _data = data || dummyFbData;
+    const _dataComparison = dataComparison || dummyFbData;
+
     return [
       id,
       name,
       industry,
       tier,
-      getTableValue(data.impressions, showFullNumbers),
-      getTableValue(dataComparison.impressions, showFullNumbers, data.impressions),
-      getTableValue(data.reach, showFullNumbers),
-      getTableValue(dataComparison.reach, showFullNumbers, data.reach),
-      getTableValue(data.cpc, showFullNumbers),
-      getTableValue(dataComparison.cpc, showFullNumbers, data.cpc),
-      getTableValue(data.ctr, showFullNumbers),
-      getTableValue(dataComparison.ctr, showFullNumbers, data.ctr),
-      getTableValue(data.outboundClicks, showFullNumbers),
-      getTableValue(dataComparison.outboundClicks, showFullNumbers, data.outboundClicks),
-      getTableValue(data.costPerOutboundClick, showFullNumbers),
-      getTableValue(dataComparison.costPerOutboundClick, showFullNumbers, data.costPerOutboundClick),
+      getTableValue(_data.impressions, showFullNumbers),
+      getTableValue(_dataComparison.impressions, showFullNumbers, data.impressions),
+      getTableValue(_data.reach, showFullNumbers),
+      getTableValue(_dataComparison.reach, showFullNumbers, data.reach),
+      getTableValue(_data.cpc, showFullNumbers),
+      getTableValue(_dataComparison.cpc, showFullNumbers, data.cpc),
+      getTableValue(_data.ctr, showFullNumbers),
+      getTableValue(_dataComparison.ctr, showFullNumbers, data.ctr),
+      getTableValue(_data.outboundClicks, showFullNumbers),
+      getTableValue(_dataComparison.outboundClicks, showFullNumbers, data.outboundClicks),
+      getTableValue(_data.costPerOutboundClick, showFullNumbers),
+      getTableValue(_dataComparison.costPerOutboundClick, showFullNumbers, data.costPerOutboundClick),
     ];
   });
 };
@@ -187,4 +199,19 @@ export const dataFormatters = {
   'Google Analytics': formatGaReports,
   'Google Ads': formatAdwordsReports,
   'Facebook Ads': formatFacebookReports
+};
+
+interface NumberFormatterProps {
+  value: number
+  info: {
+    prefix?: '€'
+    suffix?: '%'
+  }
+}
+
+export const formatDisplayNumber = ({ value, info }: NumberFormatterProps) => {
+  return value.toLocaleString('en-GB', {
+    style: info.prefix === '€' ? 'currency' : info.suffix === '%' ? 'percent': 'decimal',
+    currency: 'EUR'
+  });
 };

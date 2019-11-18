@@ -10,7 +10,8 @@ import { datePresets } from '../../utils/dates';
 import { oauthConfig } from '../../config';
 import { getMetric } from '../../connections/googleAnalytics';
 import { filters } from '../../utils/constants';
- 
+import { getFbMetric } from '../../connections/facebookAds';
+
 interface DateArgs {
   dateType: DateType
   startDate?: string
@@ -81,7 +82,7 @@ export default {
       };
     },
 
-    getProperties: async (_:any, { email }: { email: string }) => {
+    getProperties: async (_: any, { email }: { email: string }) => {
       const account = await Account.findOne({ email });
       if (!account) throw new UserInputError(`Account with email "${email}" does not exist`);
 
@@ -93,7 +94,7 @@ export default {
       return data;
     },
 
-    getGoals: async (_:any, { clientId, viewId }: { 
+    getGoals: async (_: any, { clientId, viewId }: {
       clientId: string
       viewId: string
     }) => {
@@ -116,7 +117,7 @@ export default {
       return data;
     },
 
-    getGoalsFromIds: async (_:void, { email, viewIds }: { email: string, viewIds: View[] }) => {
+    getGoalsFromIds: async (_: void, { email, viewIds }: { email: string, viewIds: View[] }) => {
       const account = await Account.findOne({ email });
       if (!account) throw new ApolloError(`Google Analytics account "${email}" does not exist`);
 
@@ -134,11 +135,11 @@ export default {
       return flatten(data);
     },
 
-    getClientGoalCompletions: async (_:void, { args }: { 
-      args: Omit<AnalyticsRequestArgs, 'viewId' | 'webPropertyId' | 'accountId'> & { 
+    getClientGoalCompletions: async (_: void, { args }: {
+      args: Omit<AnalyticsRequestArgs, 'viewId' | 'webPropertyId' | 'accountId'> & {
         clientId: string
         dateType: DateType
-      } 
+      }
     }) => {
       const client = await Client.findById(args.clientId);
       if (!client) throw new UserInputError(`Client with ID "${args.clientId}" does not exist`);
@@ -215,7 +216,7 @@ export default {
       });
     },
 
-    getClientKpis: async (_:void, { clientId, args }: { clientId: string, args: DateArgs }) => {
+    getClientKpis: async (_: void, { clientId, args }: { clientId: string, args: DateArgs }) => {
       const client = await Client.findById(clientId);
       if (!client) throw new UserInputError(`Client with ID "${clientId}" does not exist`);
 
@@ -254,6 +255,16 @@ export default {
               dimensions: [{ name: 'ga:date' }]
             });
 
+          case 'Facebook Ads':
+            if (!client.facebookAdsId) throw new UserInputError('No Facebook Ads ID set');
+
+            return getFbMetric({
+              metric: kpi.metric,
+              accountId: client.facebookAdsId,
+              startDate: dates.startDate,
+              endDate: dates.endDate
+            });
+
           default:
             break;
         }
@@ -271,7 +282,7 @@ export default {
       });
     },
 
-    getClientMetric: async (_:void, { clientId, date, metric }: {
+    getClientMetric: async (_: void, { clientId, date, metric }: {
       clientId: string
       date: DateArgs
       metric: Kpi
@@ -284,7 +295,7 @@ export default {
 
       const authClient = new google.auth.OAuth2(oauthConfig.clientID, oauthConfig.clientSecret);
       authClient.setCredentials({ access_token: account.accessToken, refresh_token: account.refreshToken });
-      
+
       let dates = { startDate: date.startDate, endDate: date.endDate };
       if (date.dateType !== DateType.CUSTOM) {
         dates = datePresets[date.dateType]();
@@ -298,20 +309,34 @@ export default {
             authClient,
             viewId: client.mainViewId || client.views[0].id,
             dateRange: dates,
-            metrics: [{ expression: `ga:${metric.metric}` }],
+            metrics: [{ expression: `ga:${metric.metric.toLowerCase()}` }],
             filtersExpression: filters[getChannel(metric.channel)].join(','),
             dimensions: [{ name: 'ga:date' }]
           });
+          break;
 
         case 'Google Ads':
+          const metricName = metric.metric === 'Cost' ? 'adCost' : metric.metric.toLowerCase();
           result = await getMetric({
             authClient,
             viewId: client.mainViewId || client.views[0].id,
             dateRange: dates,
-            metrics: [{ expression: `ga:${metric.metric}` }],
+            metrics: [{ expression: `ga:${metricName}` }],
             filtersExpression: filters.PAID_SEARCH.join(','),
             dimensions: [{ name: 'ga:date' }]
           });
+          break;
+
+        case 'Facebook Ads':
+          if (!client.facebookAdsId) throw new UserInputError('No Facebook Ads ID set');
+
+          result = await getFbMetric({
+            metric: metric.metric,
+            accountId: client.facebookAdsId || '',
+            startDate: dates.startDate,
+            endDate: dates.endDate
+          });
+          break;
 
         default:
           break;

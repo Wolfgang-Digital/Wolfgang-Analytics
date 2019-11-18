@@ -11,6 +11,16 @@ export interface FacebookRequestArgs {
   endDate?: Date | string
 }
 
+type MetricData = {
+  [name: string]: {
+    action_value: string
+    value: string
+  }[]
+} & {
+  date_start: string
+  date_end: string
+}
+
 interface FacebookResponseData {
   impressions: number
   reach: number
@@ -28,7 +38,7 @@ interface FacebookResponseData {
   date_stop: string
 }
 
-const BASE_URL = 'https://graph.facebook.com/v3.3/';
+const BASE_URL = 'https://graph.facebook.com/v5.0/';
 
 export const datePresets: { [key: string]: string } = {
   LAST_30_DAYS: 'last_30d',
@@ -89,4 +99,28 @@ export const getFacebookAdsReport = async ({
   }));
 
   return reports;
+};
+
+export const getFbMetric = async ({
+  accountId,
+  startDate,
+  endDate,
+  metric
+}: Omit<FacebookRequestArgs, 'dateType'> & { metric: string }) => {
+  const metricName = metric.toLowerCase().replace(/\//g, 'per').replace(/ /g, '_');
+  const url = `${BASE_URL}${accountId}/insights/?access_token=${process.env.FACEBOOK_APP_KEY}&fields=${metricName}&time_range={"since":"${startDate}","until":"${endDate}"}&time_increment=1`;
+
+  const res = await fetch(url);
+  const json = await res.json();
+
+  if (json.error) {
+    throw new Error(json.error.message);
+  }
+
+  return json.data.map((entry: MetricData) => {
+    return {
+      date: entry.date_start,
+      value: entry[metricName][0].value
+    };
+  });
 };

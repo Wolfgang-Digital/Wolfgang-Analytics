@@ -11,14 +11,14 @@ export const useChartData = (label: string, data: ChartData[], dataComparison: C
   return useMemo(() => {
     if (!data) return [];
     
-    return data.map(goalData => {
-      const date = goalData.date.split('-');
+    return data.map(entry => {
+      const date = entry.date.split('-');
       const regex = `[0-9]...-${date[1]}-${date[2]}`;
       const comparison = dataComparison.find(comparison => !!comparison.date.match(regex));
 
       return {
-        date: format(parseISO(goalData.date), 'do MMM yyyy'),
-        [label]: goalData.value,
+        date: format(parseISO(entry.date), 'do MMM yyyy'),
+        [label]: entry.value,
         'vs Last Year': comparison ? comparison.value : null
       };
     });

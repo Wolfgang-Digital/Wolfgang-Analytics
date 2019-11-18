@@ -3,6 +3,10 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import './styles.css';
 
+interface Props {
+  margin?: string
+}
+
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     display: 'flex',
@@ -24,11 +28,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-const LoadingIndicator = () => {
+const LoadingIndicator: React.FC<Props> = ({ margin }) => {
   const classes = useStyles({});
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{ margin }}>
       <span className="loading-indicator-dot" />
       <span className="loading-indicator-dot" />
       <span className="loading-indicator-dot" />

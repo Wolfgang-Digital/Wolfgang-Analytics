@@ -4,14 +4,12 @@ import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 
-import ga_logo from '../../assets/images/ga_logo.svg';
 import { GET_GOAL_COMPLETIONS } from '../../graphql/clients';
 import useQuery from '../../hooks/useQuery';
 import { getDataFilter } from '../../redux/dataFilter';
 import { getClient } from '../../redux/client';
 import { toUpperCase } from '../../utils/formatting';
 import GoalCard from './GoalCard';
-import LoadingIndicator from '../LoadingIndicator';
 
 export interface Goal {
   metric: 'Completions' | 'Conversion Rate'
@@ -27,25 +25,7 @@ export interface Goal {
 }
 
 const useStyles = makeStyles({
-  title: {
-    paddingBottom: '0 !important',
-    '& > h2': {
-      fontWeight: 500
-    }
-  },
-  titleText: {
-    display: 'flex',
-    lineHeight: '28px',
-    fontSize: 28,
-    '& > img': {
-      marginRight: 8,
-      height: 26
-    },
-    '& > div:last-child': {
-      marginLeft: 10,
-      transform: 'translateY(-2px)'
-    }
-  }
+  
 });
 
 const Goals: React.FC = () => {
@@ -53,7 +33,7 @@ const Goals: React.FC = () => {
   const client = useSelector(getClient);
   const classes = useStyles();
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     query: GET_GOAL_COMPLETIONS,
     defaultValue: { current: [], previous: [] },
     options: {
@@ -79,11 +59,9 @@ const Goals: React.FC = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} className={classes.title}>
-        <Typography component="h2" variant="h4" className={classes.titleText}>
-          <img src={ga_logo} alt="GA Logo" />
+      <Grid item xs={12}>
+        <Typography component="h2" variant="h4">
           Goals
-          {isLoading && <LoadingIndicator />}
         </Typography>
       </Grid>
       {data && data.current && data.current.map((goal: Goal, i: number) => (
