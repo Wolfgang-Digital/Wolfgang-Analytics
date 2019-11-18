@@ -28,6 +28,6 @@ export const uploadData = async ({ dataset, table, rows }: Args) => {
       .table(table)
       .insert(rows);
   } catch (e) {
-    console.error(JSON.stringify(e, null, 2));
+    console.error('BigQuery Error: ', JSON.stringify(e, null, 2));
   }
 };

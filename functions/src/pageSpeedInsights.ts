@@ -78,11 +78,13 @@ export const updatePageSpeedInsights = async () => {
     requests,
     cb: (id, url, res: PageSpeedReport) => {
       try {
+        const match = url.match(/\w+$/);
+        
         data.push({
           client_id: id,
           date: format(new Date(), 'yyyy-MM-dd'),
           url: urlMap[url],
-          device: res.lighthouseResult.configSettings.emulatedFormFactor,
+          device:  match ? match[0] : res.lighthouseResult.configSettings.emulatedFormFactor,
           first_contentful_paint: parseValue(res.lighthouseResult.audits['first-contentful-paint'].displayValue),
           speed_index: parseValue(res.lighthouseResult.audits['speed-index'].displayValue),
           time_to_interactive: parseValue(res.lighthouseResult.audits['interactive'].displayValue),
@@ -91,9 +93,8 @@ export const updatePageSpeedInsights = async () => {
           estimated_input_latency: parseValue(res.lighthouseResult.audits['estimated-input-latency'].displayValue)
         });
       } catch (e) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.log(e.errors[0].message);
-        }
+        console.log('Request Error: ', JSON.stringify(e, null, 2));
+        console.log('Response: ', JSON.stringify(res, null, 2));
       }
     }
   });
