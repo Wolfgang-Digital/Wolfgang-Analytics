@@ -131,7 +131,7 @@ const Sidebar: React.FC = ({ children }) => {
 
   return (
     <div className={classes.root}>
-      {location.pathname !== '/login' && (
+      {!location.pathname.includes('/login') && (
         <AppBar
           position="fixed"
           elevation={1}

@@ -5,6 +5,7 @@ import uuid from 'uuid/v4';
 import { get } from 'lodash';
 
 import { setIsLoading, removeIsLoading, addMessage } from '../redux/api';
+import useThrottle from '../hooks/useThrottle';
 
 interface Props {
   query: any
@@ -13,9 +14,29 @@ interface Props {
   options?: any
 }
 
+interface DispatchMessagePayload {
+  id: string
+  type: 'success' | 'warning' | 'error'
+  message: string
+}
+
 const useQueryWrapper = ({ query, key, defaultValue, options }: Props) => {
   const [loadId, setLoadId] = useState('');
   const dispatch = useDispatch();
+
+  const throttledDispatchError = useThrottle({
+    fn: (payload: DispatchMessagePayload) => dispatch(addMessage(payload)),
+    delay: 1000
+  });
+
+  const throttledSetIsLoading = useThrottle({
+    fn: (id: string) => dispatch(setIsLoading(id))
+  });
+
+  const throttledRemoveIsLoading = useThrottle({
+    fn: (id: string) => dispatch(removeIsLoading(id)),
+    delay: 25
+  });
 
   useEffect(() => {
     if (!loadId) setLoadId(uuid());
@@ -30,21 +51,21 @@ const useQueryWrapper = ({ query, key, defaultValue, options }: Props) => {
     const skipError = options && options.onError;
 
     if (error && !skipError) {
-      const message = get(error, 'graphQLErrors[0].message', 'An unknown error occured');
-      dispatch(addMessage({ id: uuid(), type: 'error', message }));
+      const message = get(error, 'graphQLErrors[0].message');
+      if (message) throttledDispatchError({ id: uuid(), type: 'error', message });
     }
-  }, [error, options, dispatch]);
+  }, [error, options, throttledDispatchError]);
 
   useEffect(() => {
     if (loading && loadId) {
-      dispatch(setIsLoading(loadId));
+      throttledSetIsLoading(loadId);
     } else if (!loading && loadId) {
-      dispatch(removeIsLoading(loadId));
+      throttledRemoveIsLoading(loadId);
     }
     return () => {
-      dispatch(removeIsLoading(loadId));
+      throttledRemoveIsLoading(loadId);
     }
-  }, [loading, dispatch, loadId]);
+  }, [loading, throttledRemoveIsLoading, throttledSetIsLoading, loadId]);
 
   return {
     isLoading: loading,

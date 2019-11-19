@@ -14,14 +14,20 @@ interface Args {
     defaultValue?: any
     options?: any
   }
+  dates: {
+    startDate: string
+    endDate: string
+  }
 }
 
 interface Cache {
   lastUpdated: string
+  startDate: string
+  endDate: string
   data: any
 }
 
-const useCachedQuery = ({ name, ignoreCache, queryArgs }: Args) => {
+const useCachedQuery = ({ name, ignoreCache, queryArgs, dates }: Args) => {
   const cache: Cache | null = loadState(name, null);
 
   const cacheRequiresUpdate = cache ? (!isToday(parseISO(cache.lastUpdated)) && isPast(parseISO(cache.lastUpdated))) : true;
@@ -40,7 +46,8 @@ const useCachedQuery = ({ name, ignoreCache, queryArgs }: Args) => {
     if (data && !ignoreCache) {
       saveState(name, {
         lastUpdated: new Date(),
-        data
+        data,
+        ...dates
       });
     }
   }, [name, data]);

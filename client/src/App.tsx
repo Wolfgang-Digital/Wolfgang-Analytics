@@ -15,6 +15,7 @@ import Login from './components/Login';
 
 const ClientForm = lazy(() => import('./components/ClientForm'));
 const ClientPage = lazy(() => import('./components/ClientPage'));
+const UsersPage = lazy(() => import('./components/UsersPage'));
 
 const cache = new InMemoryCache();
 
@@ -34,6 +35,7 @@ const App: React.FC = () => {
             <ProtectedRoute exact path="/" component={Dashboard} />
             <ProtectedRoute exact path="/clients/add-client" component={ClientForm} />
             <ProtectedRoute path="/clients/:id" component={ClientPage} />
+            <ProtectedRoute exact path="/users" component={UsersPage} />
           </Layout>
         </ThemeProvider>
       </Provider>

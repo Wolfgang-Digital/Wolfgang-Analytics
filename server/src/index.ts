@@ -22,8 +22,6 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     if (!req.user) {
       throw new AuthenticationError('You must be logged in to use this service');
-    } else if (!req.user.isVerified) {
-      // throw new AuthenticationError('Your account must be verified by an admin to use this service');
     }
     return { user: req.user };
   }

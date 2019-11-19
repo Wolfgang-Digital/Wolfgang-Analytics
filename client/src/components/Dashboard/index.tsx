@@ -83,7 +83,11 @@ const Dashboard: React.FC = () => {
         variables: getQueryVariables(dataFilter),
         skip: dataFilter.datePreset === 'Custom' && !dataFilter.applyCustomDate
       }
-    }
+    },
+    dates: dataFilter.datePreset === 'Custom' ? {
+      startDate: dataFilter.startDate,
+      endDate: dataFilter.endDate
+    } : datePresets[dataFilter.datePreset]()
   });
 
   const headers = useMemo(() => {
@@ -94,7 +98,11 @@ const Dashboard: React.FC = () => {
     return hasError? [] : dataFormatters[dataFilter.platform](data, dataFilter.showFullValues);
   }, [data, dataFilter.platform, dataFilter.showFullValues, hasError]);
 
-  const dates = dataFilter.datePreset === 'Custom' ? formatCustomDate(dataFilter) : datePresets[dataFilter.datePreset]();
+  const dates = (data.startDate && data.endDate) 
+    ? { startDate: data.startDate, endDate: data.endDate }
+    : dataFilter.datePreset === 'Custom' 
+    ? formatCustomDate(dataFilter) 
+    : datePresets[dataFilter.datePreset]();
 
   const handleToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setShowFullValues(e.target.checked));

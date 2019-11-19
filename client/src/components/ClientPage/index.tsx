@@ -5,6 +5,7 @@ import { Grid, Typography, Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import SettingsIcon from '@material-ui/icons/Settings';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import { Timeline } from '@material-ui/icons';
 import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 
@@ -15,9 +16,8 @@ import Overview from './Overview';
 import Settings from './Settings';
 
 const getSubtitle = (path: string) => {
-  if (path.includes('/settings')) {
-    return 'Settings';
-  }
+  if (path.includes('/settings')) return 'Settings';
+  if (path.includes('/keywords')) return 'Keyword Analysis';
   return 'Overview';
 };
 
@@ -89,6 +89,16 @@ const ClientPage: React.FC = () => {
                   startIcon={<EqualizerIcon color="inherit" />}
                 >
                   Overview
+                </Button>
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link to={`/clients/${id}/keywords/`}>
+                <Button 
+                  className={clsx(classes.button, { [classes.activeButton]: subtitle === 'Keyword Analysis' })}
+                  startIcon={<Timeline color="inherit" />}
+                >
+                  Keyword Analysis
                 </Button>
               </Link>
             </Grid>

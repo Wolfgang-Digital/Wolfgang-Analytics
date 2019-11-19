@@ -7,19 +7,21 @@ interface ChartData {
   value: number
 }
 
-export const useChartData = (label: string, data: ChartData[], dataComparison: ChartData[]) => {
+export const useChartData = (label: string, data?: ChartData[], dataComparison?: ChartData[]) => {
   return useMemo(() => {
     if (!data) return [];
     
     return data.map(entry => {
       const date = entry.date.split('-');
       const regex = `[0-9]...-${date[1]}-${date[2]}`;
-      const comparison = dataComparison.find(comparison => !!comparison.date.match(regex));
+      const comparison = dataComparison 
+        ? dataComparison.find(comparison => !!comparison.date.match(regex)) 
+        : { date: `${parseInt(date[0]) - 1}-${date[1]}-${date[2]}`, value: 0 };
 
       return {
         date: format(parseISO(entry.date), 'do MMM yyyy'),
         [label]: entry.value,
-        'vs Last Year': comparison ? comparison.value : null
+        'vs Last Year': comparison ? comparison.value : 0
       };
     });
   }, [data, dataComparison, label]);

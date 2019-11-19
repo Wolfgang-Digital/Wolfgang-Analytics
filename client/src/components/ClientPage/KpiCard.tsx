@@ -16,6 +16,7 @@ import { kpiMetrics }  from '../../utils/constants';
 import { getDelta, formatDisplayNumber } from '../../utils/dataTransform';
 import { toUpperCase } from '../../utils/formatting';
 import LoadingIndicator from '../LoadingIndicator';
+import { platformIcons } from '../../utils/icons';
 
 interface Props {
   clientId: string;
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     titleContent: {
       padding: `16px !important`,
+      position: 'relative',
       borderBottom: '1px solid rgba(0, 0, 0, 0.2)',
       '& > div': {
         margin: 0
@@ -66,6 +68,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     chart: {
       minHeight: 50
+    },
+    logo: {
+      position: 'absolute',
+      top: 22,
+      right: 16,
+      width: 28,
+      height: 28
     }
   })
 );
@@ -107,12 +116,23 @@ const KpiCard: React.FC<Props> = ({ clientId, kpi }) => {
   const isNegative = parseFloat(delta.toString()) < 0;
 
   return (
-    <Grid item xs={12} sm={4} md={3} xl={2}>
+    <Grid item xs={12} sm={4} md={3}>
       <Card>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <CardContent className={classes.titleContent}>
-              <ListItemText primary={kpi.platform} secondary={kpi.platform === 'Google Analytics' ? kpi.channel : "All"} />
+              <ListItemText 
+                primary={kpi.platform} 
+                secondary={kpi.platform === 'Google Analytics' 
+                  ? kpi.channel
+                  : kpi.platform === 'Google Ads'
+                  ? 'Paid Search'
+                  : kpi.platform === 'Facebook Ads'
+                  ? 'Paid Social'
+                  : 'All Channels'
+                }
+              />
+              <img src={platformIcons[kpi.platform]} alt={`${kpi.platform} Logo`} className={classes.logo} />
             </CardContent>
           </Grid>
           <Grid item xs={12}>

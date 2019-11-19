@@ -160,17 +160,17 @@ export const formatFacebookReports = (data: ClientData<FacebookData>[], showFull
       industry,
       tier,
       getTableValue(_data.impressions, showFullNumbers),
-      getTableValue(_dataComparison.impressions, showFullNumbers, data.impressions),
+      getTableValue(_dataComparison.impressions, showFullNumbers, _data.impressions),
       getTableValue(_data.reach, showFullNumbers),
-      getTableValue(_dataComparison.reach, showFullNumbers, data.reach),
+      getTableValue(_dataComparison.reach, showFullNumbers, _data.reach),
       getTableValue(_data.cpc, showFullNumbers),
-      getTableValue(_dataComparison.cpc, showFullNumbers, data.cpc),
+      getTableValue(_dataComparison.cpc, showFullNumbers, _data.cpc),
       getTableValue(_data.ctr, showFullNumbers),
-      getTableValue(_dataComparison.ctr, showFullNumbers, data.ctr),
+      getTableValue(_dataComparison.ctr, showFullNumbers, _data.ctr),
       getTableValue(_data.outboundClicks, showFullNumbers),
-      getTableValue(_dataComparison.outboundClicks, showFullNumbers, data.outboundClicks),
+      getTableValue(_dataComparison.outboundClicks, showFullNumbers, _data.outboundClicks),
       getTableValue(_data.costPerOutboundClick, showFullNumbers),
-      getTableValue(_dataComparison.costPerOutboundClick, showFullNumbers, data.costPerOutboundClick),
+      getTableValue(_dataComparison.costPerOutboundClick, showFullNumbers, _data.costPerOutboundClick),
     ];
   });
 };
